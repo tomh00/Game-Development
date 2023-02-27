@@ -1,4 +1,7 @@
 package util;
+
+import java.awt.image.BufferedImage;
+
 /*
  * Created by Abraham Campbell on 15/01/2020.
  *   Copyright (c) 2020  Abraham Campbell
@@ -24,6 +27,10 @@ SOFTWARE.
    (MIT LICENSE ) e.g do what you want with this :-) 
  */ 
 public class GameObject {
+	private int speed;
+
+	// images for animating a game object
+	BufferedImage forward1, forward2, backward1, backward2, left1, left2, right1, right2;
 	
 	private Point3f centre= new Point3f(0,0,0);			// Centre of object, using 3D as objects may be scaled  
 	private int width=10;
@@ -36,12 +43,14 @@ public class GameObject {
 		
 	}
 	
-    public GameObject(String textureLocation,int width,int height,Point3f centre) { 
+    public GameObject(String textureLocation,int width,int height,Point3f centre, int speed) {
     	 hasTextured=true;
-    	 this.textureLocation=textureLocation;
-    	 this.width=width;
+
+    	 /*this.width=width;
 		 this.height=height;
 		 this.centre =centre;
+		 */
+		 this.speed = speed;
 	}
 
 	public Point3f getCentre() {
@@ -71,6 +80,8 @@ public class GameObject {
 		 
 		return blanktexture; 
 	}
+
+	public int getSpeed(){ return speed; }
   
 }
 

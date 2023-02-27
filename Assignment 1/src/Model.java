@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -32,23 +33,25 @@ SOFTWARE.
 public class Model {
 	
 	 private  GameObject Player;
+	 public GameObject background;
 	 private Controller controller = Controller.getInstance();
 	 private  CopyOnWriteArrayList<GameObject> EnemiesList  = new CopyOnWriteArrayList<GameObject>();
 	 private  CopyOnWriteArrayList<GameObject> BulletList  = new CopyOnWriteArrayList<GameObject>();
-	 private int Score=0; 
+	 private int Score=0;
 
 	public Model() {
-		 //setup game world 
-		//Player 
-		Player= new GameObject("res/pencil.png",50,50,new Point3f(500,500,0));
+		//setup game world
+		//Player
+		Player= new GameObject("res/ninja.png",50,50,new Point3f(500,500,0), 2);
+		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));
 
 		//Enemies  starting with four 
 		
-		EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*50+400 ),0,0))); 
+		/*EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*50+400 ),0,0)));
 		EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*50+500 ),0,0)));
 		EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+500 ),0,0)));
 		EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+400 ),0,0)));
-		
+		*/
 		
 	    
 	}
@@ -57,13 +60,13 @@ public class Model {
 	public void gamelogic() 
 	{
 		// Player Logic first 
-		playerLogic(); 
+		playerLogic();
 		// Enemy Logic next
-		enemyLogic();
+		//enemyLogic();
 		// Bullets move next 
 		bulletLogic();
 		// interactions between objects 
-		gameLogic(); 
+		gameLogic();
 	   
 	}
 
@@ -77,21 +80,29 @@ public class Model {
 		// using enhanced for-loop style as it makes it alot easier both code wise and reading wise too 
 		for (GameObject temp : EnemiesList) 
 		{
-		for (GameObject Bullet : BulletList) 
-		{
-			if ( Math.abs(temp.getCentre().getX()- Bullet.getCentre().getX())< temp.getWidth() 
-				&& Math.abs(temp.getCentre().getY()- Bullet.getCentre().getY()) < temp.getHeight())
+			for (GameObject Bullet : BulletList)
 			{
-				EnemiesList.remove(temp);
-				BulletList.remove(Bullet);
-				Score++;
-			}  
+				if ( Math.abs(temp.getCentre().getX()- Bullet.getCentre().getX())< temp.getWidth()
+					&& Math.abs(temp.getCentre().getY()- Bullet.getCentre().getY()) < temp.getHeight())
+				{
+					EnemiesList.remove(temp);
+					BulletList.remove(Bullet);
+					Score++;
+				}
+			}
 		}
-		}
+
+//		for (GameObject enemy : EnemiesList) {
+//			if ( Math.abs(Player.getCentre().getX()- enemy.getCentre().getX())< Player.getWidth()
+//					&& Math.abs(Player.getCentre().getY()- enemy.getCentre().getY()) < Player.getHeight()) {
+//				Player.getCentre().ApplyVector(new Vector3f(0,-80,0));
+//				Score--;
+//			}
+//		}
 		
 	}
 
-	private void enemyLogic() {
+	/*private void enemyLogic() {
 		// TODO Auto-generated method stub
 		for (GameObject temp : EnemiesList) 
 		{
@@ -104,7 +115,6 @@ public class Model {
 			if (temp.getCentre().getY()==900.0f)  // current boundary need to pass value to model 
 			{
 				EnemiesList.remove(temp);
-				
 				// enemies win so score decreased 
 				Score--;
 			} 
@@ -117,7 +127,7 @@ public class Model {
 				EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*1000),0,0))); 
 			}
 		}
-	}
+	}*/
 
 	private void bulletLogic() {
 		// TODO Auto-generated method stub
@@ -126,7 +136,7 @@ public class Model {
 		for (GameObject temp : BulletList) 
 		{
 		    //check to move them
-			  
+
 			temp.getCentre().ApplyVector(new Vector3f(0,1,0));
 			//see if they hit anything 
 			
@@ -143,35 +153,34 @@ public class Model {
 		
 		// smoother animation is possible if we make a target position  // done but may try to change things for students  
 		 
-		//check for movement and if you fired a bullet 
+		//check for movement and if you fired a bullet
 		  
-if(Controller.getInstance().isKeyAPressed()){Player.getCentre().ApplyVector( new Vector3f(-2,0,0)); }
+		if(Controller.getInstance().isKeyAPressed()){Player.getCentre().ApplyVector( new Vector3f(-Player.getSpeed(),0,0)); }
 		
 		if(Controller.getInstance().isKeyDPressed())
 		{
-			Player.getCentre().ApplyVector( new Vector3f(2,0,0));
+			Player.getCentre().ApplyVector( new Vector3f(Player.getSpeed(),0,0));
 		}
-			
+
 		if(Controller.getInstance().isKeyWPressed())
 		{
-			Player.getCentre().ApplyVector( new Vector3f(0,2,0));
+			Player.getCentre().ApplyVector( new Vector3f(0,Player.getSpeed(),0));
 		}
-		
-		if(Controller.getInstance().isKeySPressed()){Player.getCentre().ApplyVector( new Vector3f(0,-2,0));}
-		
-		if(Controller.getInstance().isKeySpacePressed())
+
+		if(Controller.getInstance().isKeySPressed()){Player.getCentre().ApplyVector( new Vector3f(0,-Player.getSpeed(), 0));}
+
+		/*if(Controller.getInstance().isKeySpacePressed())
 		{
 			CreateBullet();
 			Controller.getInstance().setKeySpacePressed(false);
-		} 
-		
+		}*/
 	}
 
-	private void CreateBullet() {
+	/*private void CreateBullet() {
 		BulletList.add(new GameObject("res/Bullet.png",32,64,new Point3f(Player.getCentre().getX(),Player.getCentre().getY(),0.0f)));
 		
 	}
-
+*/
 	public GameObject getPlayer() {
 		return Player;
 	}
