@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import util.GameObject;
+import util.Player;
 import util.Point3f;
 import util.Vector3f; 
 /*
@@ -32,7 +33,7 @@ SOFTWARE.
  */ 
 public class Model {
 	
-	 private  GameObject Player;
+	 private Player Player;
 	 public GameObject background;
 	 private Controller controller = Controller.getInstance();
 	 private  CopyOnWriteArrayList<GameObject> EnemiesList  = new CopyOnWriteArrayList<GameObject>();
@@ -42,7 +43,7 @@ public class Model {
 	public Model() {
 		//setup game world
 		//Player
-		Player= new GameObject("res/ninja.png",50,50,new Point3f(500,500,0), 2);
+		Player= new Player(50, 50,new Point3f(500,500,0), 2);
 		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));
 
 		//Enemies  starting with four 
@@ -154,20 +155,49 @@ public class Model {
 		// smoother animation is possible if we make a target position  // done but may try to change things for students  
 		 
 		//check for movement and if you fired a bullet
+		Player.spriteAnimator();
 		  
-		if(Controller.getInstance().isKeyAPressed()){Player.getCentre().ApplyVector( new Vector3f(-Player.getSpeed(),0,0)); }
+		if(Controller.getInstance().isKeyAPressed()){
+			Player.getCentre().ApplyVector(
+				new Vector3f(-Player.getSpeed(),0,0));
+			if ( Player.getSpritePosition() == 0 ) {
+				Player.setCurrentImage( Player.left1 );
+			}
+			else {
+				Player.setCurrentImage( Player.left2 );
+			}
+		}
 		
-		if(Controller.getInstance().isKeyDPressed())
-		{
+		if(Controller.getInstance().isKeyDPressed()) {
 			Player.getCentre().ApplyVector( new Vector3f(Player.getSpeed(),0,0));
+			if ( Player.getSpritePosition() == 0 ) {
+				Player.setCurrentImage( Player.right1 );
+			}
+			else {
+				Player.setCurrentImage( Player.right2 );
+			}
 		}
 
 		if(Controller.getInstance().isKeyWPressed())
 		{
 			Player.getCentre().ApplyVector( new Vector3f(0,Player.getSpeed(),0));
+			if ( Player.getSpritePosition() == 0 ) {
+				Player.setCurrentImage( Player.forward1 );
+			}
+			else {
+				Player.setCurrentImage( Player.forward2 );
+			}
 		}
 
-		if(Controller.getInstance().isKeySPressed()){Player.getCentre().ApplyVector( new Vector3f(0,-Player.getSpeed(), 0));}
+		if(Controller.getInstance().isKeySPressed()){
+			Player.getCentre().ApplyVector( new Vector3f(0,-Player.getSpeed(), 0));
+			if ( Player.getSpritePosition() == 0 ) {
+				Player.setCurrentImage( Player.backward1 );
+			}
+			else {
+				Player.setCurrentImage( Player.backward2 );
+			}
+		}
 
 		/*if(Controller.getInstance().isKeySpacePressed())
 		{

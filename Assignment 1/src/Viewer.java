@@ -51,7 +51,7 @@ public class Viewer extends JPanel {
 
 	public Viewer(Model gameworld) {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-		this.setBackground(Color.green);
+		this.setBackground(Color.black);
 		this.gameworld = gameworld;
 	}
 
@@ -89,10 +89,11 @@ public class Viewer extends JPanel {
 
 
 	public void paintComponent(Graphics g) {
-
 		super.paintComponent(g);
-		g.fillRect((int) gameworld.getPlayer().getCentre().getX(), (int) gameworld.getPlayer().getCentre().getY(), scaledTileSize, scaledTileSize);
-		g.dispose();
+		g.drawImage(gameworld.getPlayer().getCurrentImage(),
+				(int)gameworld.getPlayer().getCentre().getX(),
+				(int)gameworld.getPlayer().getCentre().getY(),
+				scaledTileSize, scaledTileSize, null);
 
 		CurrentAnimationTime++; // runs animation time step
 
