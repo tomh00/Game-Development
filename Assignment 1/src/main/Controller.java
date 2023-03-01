@@ -1,7 +1,7 @@
+package main;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /*
  * Created by Abraham Campbell on 15/01/2020.
@@ -68,7 +68,7 @@ public class Controller implements KeyListener {
 			case 'd':setKeyDPressed(true);break;
 			case ' ':setKeySpacePressed(true);break;   
 		    default:
-		    	System.out.println("Controller test:  Unknown key pressed");
+		    	System.out.println("main.Controller test:  Unknown key pressed");
 		        break;
 		}  
 		
@@ -87,7 +87,7 @@ public class Controller implements KeyListener {
 			case 'd':setKeyDPressed(false);break;
 			case ' ':setKeySpacePressed(false);break;   
 		    default:
-		    	//System.out.println("Controller test:  Unknown key pressed");
+		    	//System.out.println("main.Controller test:  Unknown key pressed");
 		        break;
 		}  
 		 //upper case 

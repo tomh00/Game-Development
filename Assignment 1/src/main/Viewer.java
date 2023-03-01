@@ -1,3 +1,5 @@
+package main;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -5,7 +7,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import util.worldmap.Tile;
 import util.worldmap.WorldMap;
 
 
@@ -58,7 +59,7 @@ public class Viewer extends JPanel {
 
 	Model gameworld = new Model();
 
-//	public Viewer(Model World) {
+//	public main.Viewer(main.Model World) {
 //		this.gameworld=World;
 //		// TODO Auto-generated constructor stub
 //	}
@@ -90,8 +91,7 @@ public class Viewer extends JPanel {
 		super.paintComponent(g);
 
 		WorldMap worldMap = new WorldMap();
-		g.drawImage( worldMap.getMap()[0].getTile(), 0, 0, scaledTileSize, scaledTileSize, null );
-		g.drawImage( worldMap.getMap()[1].getTile(), 48, 0, scaledTileSize, scaledTileSize, null );
+		worldMap.drawMap(this, g);
 
 		g.drawImage(gameworld.getPlayer().getCurrentImage(),
 				(int)gameworld.getPlayer().getCentre().getX(),
@@ -215,6 +215,10 @@ public class Viewer extends JPanel {
 //		// background image from https://www.needpix.com/photo/download/677346/space-stars-nebula-background-galaxy-universe-free-pictures-free-photos-free-images
 //
 	}
+
+	public int getMaxScreenColumns () { return maxScreenColumns; }
+	public int getMaxScreenRows () { return maxScreenRows; }
+	public int getScaledTileSize () { return scaledTileSize; }
 		 
 	 
 

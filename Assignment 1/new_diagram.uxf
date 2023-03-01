@@ -9,17 +9,17 @@
       <w>400</w>
       <h>430</h>
     </coordinates>
-    <panel_attributes>::Controller
+    <panel_attributes>::main.Controller
 --
 -KeyAPressed = false: boolean
 -KeySPressed = false: boolean
 -KeyDPressed = false: boolean
 -KeyWPressed = false: boolean
 -KeySpacePressed = false: boolean
--instance = new Controller(): Controller
+-instance = new main.Controller(): main.Controller
 --
-+Controller(): ctor
-+getInstance(): Controller
++main.Controller(): ctor
++getInstance(): main.Controller
 +keyTyped(KeyEvent e): // Key pressed , will keep triggering &#13;
 void
 +keyPressed(KeyEvent e): void
@@ -116,15 +116,15 @@ void
       <w>630</w>
       <h>330</h>
     </coordinates>
-    <panel_attributes>::Model
+    <panel_attributes>::main.Model
 --
 -Player: GameObject
--controller = Controller.getInstance(): Controller
+-controller = main.Controller.getInstance(): main.Controller
 -EnemiesList = new CopyOnWriteArrayList&lt;GameObject&gt;(): CopyOnWriteArrayList&lt;GameObject&gt;
 -BulletList = new CopyOnWriteArrayList&lt;GameObject&gt;(): CopyOnWriteArrayList&lt;GameObject&gt;
 -Score = 0: int
 --
-+Model(): ctor
++main.Model(): ctor
 +gamelogic(): void
 -GameLogic(): void
 -EnemyLogic(): void
@@ -175,15 +175,15 @@ void
       <w>500</w>
       <h>260</h>
     </coordinates>
-    <panel_attributes>::Viewer
+    <panel_attributes>::main.Viewer
 --
 -CurrentAnimationTime = 0: long
-~gameworld = new Model(): Model
+~gameworld = new main.Model(): main.Model
 --
-+Viewer(Model World): ctor
-+Viewer(LayoutManager layout): ctor
-+Viewer(boolean isDoubleBuffered): ctor
-+Viewer(LayoutManager layout, boolean isDoubleBuffered): ctor
++main.Viewer(main.Model World): ctor
++main.Viewer(LayoutManager layout): ctor
++main.Viewer(boolean isDoubleBuffered): ctor
++main.Viewer(LayoutManager layout, boolean isDoubleBuffered): ctor
 +updateview(): void
 +paintComponent(Graphics g): void
 -drawEnemies(int x, int y, int width, int height, String texture, Graphics g): void
@@ -218,15 +218,15 @@ void
       <w>280</w>
       <h>190</h>
     </coordinates>
-    <panel_attributes>::MainWindow
+    <panel_attributes>::main.MainWindow
 --
 -frame = new JFrame("Game"): JFrame
--gameworld = new Model(): Model
--canvas = new Viewer(gameworld): Viewer
--Controller = new Controller(): KeyListener
+-gameworld = new main.Model(): main.Model
+-canvas = new main.Viewer(gameworld): main.Viewer
+-main.Controller = new main.Controller(): KeyListener
 -TargetFPS = 100: int
 --
-+MainWindow(): ctor
++main.MainWindow(): ctor
 +main(String[] args): void
 -gameloop(): void
 --

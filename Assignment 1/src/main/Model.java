@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.Random;
+package main;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import util.GameObject;
@@ -199,10 +198,10 @@ public class Model {
 			}
 		}
 
-		/*if(Controller.getInstance().isKeySpacePressed())
+		/*if(main.Controller.getInstance().isKeySpacePressed())
 		{
 			CreateBullet();
-			Controller.getInstance().setKeySpacePressed(false);
+			main.Controller.getInstance().setKeySpacePressed(false);
 		}*/
 	}
 
