@@ -155,7 +155,7 @@ public class Model {
 		// smoother animation is possible if we make a target position  // done but may try to change things for students  
 		 
 		//check for movement and if you fired a bullet
-		Player.spriteAnimator();
+		Player.animateSprite();
 		  
 		if(Controller.getInstance().isKeyAPressed()){
 			Player.getCentre().ApplyVector(

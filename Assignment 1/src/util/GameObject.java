@@ -56,7 +56,7 @@ public class GameObject {
 		 this.speed = speed;
 	}
 
-	public void spriteAnimator(){
+	public void animateSprite(){
 		if( frameNum > 15 ){
 			if( spritePosition == 0 ) {
 				spritePosition = 1;
