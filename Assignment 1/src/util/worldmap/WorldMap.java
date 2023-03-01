@@ -30,7 +30,8 @@ public class WorldMap {
         for( int i = 0; i < viewer.getMaxScreenColumns(); i++ ) {
             for( int j = 0; j < viewer.getMaxScreenRows(); j++ ) {
                 g.drawImage( map[1].getTile(),
-                        x, y, null);
+                        x, y,
+                        viewer.getScaledTileSize(), viewer.getScaledTileSize(), null );
                 y += viewer.getScaledTileSize();
             }
             y = 0;
