@@ -1,14 +1,12 @@
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
-import util.GameObject;
+import util.worldmap.Tile;
+import util.worldmap.WorldMap;
 
 
 /*
@@ -90,6 +88,11 @@ public class Viewer extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+
+		WorldMap worldMap = new WorldMap();
+		g.drawImage( worldMap.getMap()[0].getTile(), 0, 0, scaledTileSize, scaledTileSize, null );
+		g.drawImage( worldMap.getMap()[1].getTile(), 48, 0, scaledTileSize, scaledTileSize, null );
+
 		g.drawImage(gameworld.getPlayer().getCurrentImage(),
 				(int)gameworld.getPlayer().getCentre().getX(),
 				(int)gameworld.getPlayer().getCentre().getY(),
