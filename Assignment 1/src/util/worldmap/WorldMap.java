@@ -17,32 +17,53 @@ import main.Viewer;
 
 public class WorldMap {
     private Tile[] tiles;
-    private Tile[] map;
+    private int[][] map;
     private int columns, rows;
 
-    public WorldMap(){
+    public WorldMap( Model gameworld ){
         // create list of tiles
         try {
-            Tile roadTile = new Tile(ImageIO.read(getClass().getResourceAsStream("/Road-1.png.png")));
+            Tile roadTile = new Tile(ImageIO.read(getClass().getResourceAsStream("/background/road.png")));
             Tile grassTile = new Tile (ImageIO.read(getClass().getResourceAsStream("/background/grass.png")));
             tiles = new Tile[2];
-            tiles[0] = roadTile;
-            tiles[1] = grassTile;
+            tiles[0] = grassTile;
+            tiles[1] = roadTile;
         } catch (IOException e ) {
             e.printStackTrace();
         }
+        columns = gameworld.getMaxScreenColumns();
+        rows = gameworld.getMaxScreenRows();
+        map = new int[ rows ][ columns ];
 
-        getMapInput();
+        getMapInput( gameworld );
+        int x = 1+2;
     }
 
-    private void getMapInput() {
+    private void getMapInput( Model gameworld ) {
         // Initialise the map array
-        // TODO
+        try {
+            InputStream inputStream = getClass().getResourceAsStream("/background/world-map.txt" );
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( inputStream ) );
+
+            for( int i = 0; i < gameworld.getMaxScreenRows(); i++ ) {
+                String currentLine = bufferedReader.readLine();
+                for ( int j = 0; j < gameworld.getMaxScreenColumns(); j++ ) {
+                    String [] mapInputs = currentLine.split( " " ); // map inputs from current line in an array
+                    int currentTile = Integer.parseInt( mapInputs[j] );
+
+                    // place current tile number into the map array
+                    map[ i ][ j ] = currentTile;
+                }
+            }
+
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
     }
 
     public void drawMap ( Model gameworld, Graphics g ) {
         try {
-            InputStream inputStream = getClass().getResourceAsStream("/background/world-map.txt");
+            InputStream inputStream = getClass().getResourceAsStream("/background/world-map.txt.txt");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             int x = 0, y = 0;
             for ( int i = 0; i < gameworld.getMaxScreenColumns(); i++ ) {
@@ -64,7 +85,8 @@ public class WorldMap {
         }
     }
 
-    public Tile[] getMap() {
-        return map;
-    }
+    public int[][] getMap() { return map; }
+    public int getColumns() { return columns; }
+    public int getRows() { return rows; }
+    public Tile[] getTiles() { return tiles; }
 }

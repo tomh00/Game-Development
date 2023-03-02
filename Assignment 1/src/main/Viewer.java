@@ -92,6 +92,7 @@ public class Viewer extends JPanel {
 
 		//worldMap.drawMap( this, g );
 		//drawWorldMap( gameworld.getWorldMap(), g );
+		drawWorldMap( gameworld.getWorldMap(), g );
 
 		drawPlayer( g );
 
@@ -144,11 +145,14 @@ public class Viewer extends JPanel {
 //	}
 //
 	private void drawWorldMap( WorldMap worldMap, Graphics g ) {
-		//TODO
-		// iterate through world map map array and display each tile
-		for( int row = 0; row < worldMap.getMap().length; row++ ) {
-			for( int column = 0; column < 5; column++ ) {
-				// TODO
+		// iterate through worldmap map array and display each tile
+		for( int row = 0, y = 0; row < worldMap.getRows(); row++, y += gameworld.getScaledTileSize() ) {
+			for( int column = 0, x = 0; column < worldMap.getColumns(); column++, x += gameworld.getScaledTileSize() ) {
+				int tile = worldMap.getMap()[ row ][ column ];
+				g.drawImage( worldMap.getTiles()[tile].getTile(),
+						x,y,
+						gameworld.getScaledTileSize(), gameworld.getScaledTileSize(),
+						null );
 			}
 		}
 
