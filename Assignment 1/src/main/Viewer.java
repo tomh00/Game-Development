@@ -90,10 +90,8 @@ public class Viewer extends JPanel {
 	public void paintComponent( Graphics g ) {
 		super.paintComponent( g );
 
-		//worldMap.drawMap( this, g );
-		//drawWorldMap( gameworld.getWorldMap(), g );
+		// draw the game
 		drawWorldMap( gameworld.getWorldMap(), g );
-
 		drawPlayer( g );
 
 		CurrentAnimationTime++; // runs animation time step
@@ -155,12 +153,6 @@ public class Viewer extends JPanel {
 						null );
 			}
 		}
-
-		//g.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer));
-		//Lighnting Png from https://opengameart.org/content/animated-spaceships  its 32x32 thats why I know to increament by 32 each time
-		// Bullets from https://opengameart.org/forumtopic/tatermands-art
-		// background image from https://www.needpix.com/photo/download/677346/space-stars-nebula-background-galaxy-universe-free-pictures-free-photos-free-images
-
 	}
 //
 ////	private void drawBackground(Graphics g)
