@@ -23,11 +23,15 @@ public class WorldMap {
     public WorldMap( Model gameworld ){
         // create list of tiles
         try {
-            Tile roadTile = new Tile(ImageIO.read(getClass().getResourceAsStream("/background/road.png")));
-            Tile grassTile = new Tile (ImageIO.read(getClass().getResourceAsStream("/background/grass.png")));
-            tiles = new Tile[2];
-            tiles[0] = grassTile;
-            tiles[1] = roadTile;
+            Tile roadTile = new Tile( ImageIO.read( getClass().getResourceAsStream( "/background/road.png" ) ) );
+            Tile grassTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/grass.png" ) ) );
+            Tile pathTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/path.png" ) ) );
+            Tile roadLineTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/road-line.png" ) ) );
+            tiles = new Tile[4];
+            tiles[ 0 ] = grassTile;
+            tiles[ 1 ] = pathTile;
+            tiles[ 2 ] = roadTile;
+            tiles[ 3 ] = roadLineTile;
         } catch (IOException e ) {
             e.printStackTrace();
         }
