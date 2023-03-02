@@ -5,7 +5,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import util.GameObject;
 import util.Player;
 import util.Point3f;
-import util.Vector3f; 
+import util.Vector3f;
+import util.worldmap.WorldMap;
+
 /*
  * Created by Abraham Campbell on 15/01/2020.
  *   Copyright (c) 2020  Abraham Campbell
@@ -33,16 +35,25 @@ SOFTWARE.
 public class Model {
 	
 	 private Player Player;
-	 public GameObject background;
+	 private WorldMap worldMap;
 	 private Controller controller = Controller.getInstance();
-	 private  CopyOnWriteArrayList<GameObject> EnemiesList  = new CopyOnWriteArrayList<GameObject>();
+	 /*private  CopyOnWriteArrayList<GameObject> EnemiesList  = new CopyOnWriteArrayList<GameObject>();
 	 private  CopyOnWriteArrayList<GameObject> BulletList  = new CopyOnWriteArrayList<GameObject>();
-	 private int Score=0;
+	 private int Score=0;*/
+
+	private final int tileSize = 16;
+	private final int scale = 3;
+	private final int scaledTileSize = tileSize * scale;
+	private final int maxScreenColumns = 20;
+	private final int maxScreenRows = 20;
+	private final int screenHeight = scaledTileSize * maxScreenRows;
+	private final int screenWidth = scaledTileSize * maxScreenColumns;
 
 	public Model() {
 		//setup game world
 		//Player
 		Player= new Player(50, 50,new Point3f(500,500,0), 2);
+		worldMap = new WorldMap();
 		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));
 
 		//Enemies  starting with four 
@@ -64,7 +75,7 @@ public class Model {
 		// Enemy Logic next
 		//enemyLogic();
 		// Bullets move next 
-		bulletLogic();
+		//bulletLogic();
 		// interactions between objects 
 		gameLogic();
 	   
@@ -78,7 +89,7 @@ public class Model {
 		
 		//see if they hit anything 
 		// using enhanced for-loop style as it makes it alot easier both code wise and reading wise too 
-		for (GameObject temp : EnemiesList) 
+		/*for (GameObject temp : EnemiesList)
 		{
 			for (GameObject Bullet : BulletList)
 			{
@@ -90,7 +101,7 @@ public class Model {
 					Score++;
 				}
 			}
-		}
+		}*/
 
 //		for (GameObject enemy : EnemiesList) {
 //			if ( Math.abs(Player.getCentre().getX()- enemy.getCentre().getX())< Player.getWidth()
@@ -129,7 +140,7 @@ public class Model {
 		}
 	}*/
 
-	private void bulletLogic() {
+	/*private void bulletLogic() {
 		// TODO Auto-generated method stub
 		// move bullets 
 	  
@@ -147,7 +158,7 @@ public class Model {
 			} 
 		} 
 		
-	}
+	}*/
 
 	private void playerLogic() {
 		
@@ -213,18 +224,21 @@ public class Model {
 	public GameObject getPlayer() {
 		return Player;
 	}
-
-	public CopyOnWriteArrayList<GameObject> getEnemies() {
+	public WorldMap getWorldMap() { return worldMap; }
+	public int getMaxScreenColumns () { return maxScreenColumns; }
+	public int getMaxScreenRows () { return maxScreenRows; }
+	public int getScaledTileSize () { return scaledTileSize; }
+	public int getScreenHeight() { return screenHeight; }
+	public int getScreenWidth() { return screenWidth; }
+	/*public CopyOnWriteArrayList<GameObject> getEnemies() {
 		return EnemiesList;
 	}
-	
 	public CopyOnWriteArrayList<GameObject> getBullets() {
 		return BulletList;
 	}
-
 	public int getScore() { 
 		return Score;
-	}
+	}*/
  
 
 }

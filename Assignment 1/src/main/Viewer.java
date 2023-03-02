@@ -40,16 +40,16 @@ public class Viewer extends JPanel {
 	// May Use the following (slightly different?) version
 	// Can use tiles for a full on game world rather than one screen
 	// Reference: https://www.youtube.com/watch?v=om59cwR7psI&list=PL_QPQmz5C6WUF-pOQDsbsKbaBZqXj4qSq&index=1
-	private final int tileSize = 16;
+	/*private final int tileSize = 16;
 	private final int scale = 3;
 	private final int scaledTileSize = tileSize * scale;
 	private final int maxScreenColumns = 20;
 	private final int maxScreenRows = 20;
 	private final int screenHeight = scaledTileSize * maxScreenRows;
-	private final int screenWidth = scaledTileSize * maxScreenColumns;
+	private final int screenWidth = scaledTileSize * maxScreenColumns;*/
 
-	public Viewer(Model gameworld) {
-		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+	public Viewer( Model gameworld ) {
+		this.setPreferredSize( new Dimension(gameworld.getScreenWidth(), gameworld.getScreenHeight() ) );
 		this.setBackground(Color.black);
 		this.gameworld = gameworld;
 	}
@@ -87,16 +87,13 @@ public class Viewer extends JPanel {
 	}
 
 
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
+	public void paintComponent( Graphics g ) {
+		super.paintComponent( g );
 
-		WorldMap worldMap = new WorldMap();
-		worldMap.drawMap(this, g);
+		//worldMap.drawMap( this, g );
+		//drawWorldMap( gameworld.getWorldMap(), g );
 
-		g.drawImage(gameworld.getPlayer().getCurrentImage(),
-				(int)gameworld.getPlayer().getCentre().getX(),
-				(int)gameworld.getPlayer().getCentre().getY(),
-				scaledTileSize, scaledTileSize, null);
+		drawPlayer( g );
 
 		CurrentAnimationTime++; // runs animation time step
 
@@ -146,26 +143,21 @@ public class Viewer extends JPanel {
 //
 //	}
 //
-//	private void drawBackground(int x, int y, int width, int height, String texture,Graphics g) {
-//		File TextureToLoad = new File(texture);
-//		try {
-//			Image myImage = ImageIO.read(TextureToLoad);
-//			//The spirte is 32x32 pixel wide and 4 of them are placed together so we need to grab a different one each time
-//			//remember your training :-) computer science everything starts at 0 so 32 pixels gets us to 31
-//			int currentPositionInAnimation= ((int) ((CurrentAnimationTime%40)/10))*32; //slows down animation so every 10 frames we get another frame so every 100ms
-//			g.drawImage(myImage, x,y, x+width, y+height, currentPositionInAnimation  , 0, currentPositionInAnimation+31, 32, null);
-//
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		//g.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer));
-//		//Lighnting Png from https://opengameart.org/content/animated-spaceships  its 32x32 thats why I know to increament by 32 each time
-//		// Bullets from https://opengameart.org/forumtopic/tatermands-art
-//		// background image from https://www.needpix.com/photo/download/677346/space-stars-nebula-background-galaxy-universe-free-pictures-free-photos-free-images
-//
-//	}
+	private void drawWorldMap( WorldMap worldMap, Graphics g ) {
+		//TODO
+		// iterate through world map map array and display each tile
+		for( int row = 0; row < worldMap.getMap().length; row++ ) {
+			for( int column = 0; column < 5; column++ ) {
+				// TODO
+			}
+		}
+
+		//g.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer));
+		//Lighnting Png from https://opengameart.org/content/animated-spaceships  its 32x32 thats why I know to increament by 32 each time
+		// Bullets from https://opengameart.org/forumtopic/tatermands-art
+		// background image from https://www.needpix.com/photo/download/677346/space-stars-nebula-background-galaxy-universe-free-pictures-free-photos-free-images
+
+	}
 //
 ////	private void drawBackground(Graphics g)
 ////	{
@@ -195,32 +187,20 @@ public class Viewer extends JPanel {
 //	}
 //
 //
-	private void drawPlayer(int x, int y, int width, int height, String texture,Graphics g) {
-		File TextureToLoad = new File(texture);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE
-		try {
-			Image myImage = ImageIO.read(TextureToLoad);
-			//The spirte is 32x32 pixel wide and 4 of them are placed together so we need to grab a different one each time
-			//remember your training :-) computer science everything starts at 0 so 32 pixels gets us to 31
-			int currentPositionInAnimation= ((int) ((CurrentAnimationTime%40)/10))*32; //slows down animation so every 10 frames we get another frame so every 100ms
-			g.drawImage(myImage, x,y, x+width, y+height, currentPositionInAnimation  , 0, currentPositionInAnimation+31, 32, null);
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//
-//		//g.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer));
-//		//Lighnting Png from https://opengameart.org/content/animated-spaceships  its 32x32 thats why I know to increament by 32 each time
-//		// Bullets from https://opengameart.org/forumtopic/tatermands-art
-//		// background image from https://www.needpix.com/photo/download/677346/space-stars-nebula-background-galaxy-universe-free-pictures-free-photos-free-images
-//
+	private void drawPlayer( Graphics g ) {
+		g.drawImage( gameworld.getPlayer().getCurrentImage(),
+				(int)gameworld.getPlayer().getCentre().getX(),
+				(int)gameworld.getPlayer().getCentre().getY(),
+				gameworld.getScaledTileSize(),
+				gameworld.getScaledTileSize(),
+				null );
 	}
 
-	public int getMaxScreenColumns () { return maxScreenColumns; }
+	/*public int getMaxScreenColumns () { return maxScreenColumns; }
 	public int getMaxScreenRows () { return maxScreenRows; }
 	public int getScaledTileSize () { return scaledTileSize; }
 	public int getScreenHeight() { return screenHeight; }
-	public int getScreenWidth() { return screenWidth; }
+	public int getScreenWidth() { return screenWidth; }*/
 }
 
 
