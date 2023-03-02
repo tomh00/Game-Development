@@ -54,7 +54,7 @@ public class Model {
 	private final int screenWidth = scaledTileSize * maxScreenColumns;
 
 	// World map is larger than the screen so has seperate boundaries
-	private final int maxWorldColumns = 26;
+	private final int maxWorldColumns = 27;
 	private final int maxWorldRows = 23;
 	private final int worldWidth = scaledTileSize * maxWorldColumns;
 	private final int worldHeight = scaledTileSize * maxWorldRows;
