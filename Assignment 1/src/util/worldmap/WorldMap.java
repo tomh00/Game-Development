@@ -35,12 +35,11 @@ public class WorldMap {
         } catch (IOException e ) {
             e.printStackTrace();
         }
-        columns = gameworld.getMaxScreenColumns();
-        rows = gameworld.getMaxScreenRows();
+        columns = gameworld.getMaxWorldColumns();
+        rows = gameworld.getMaxWorldRows();
         map = new int[ rows ][ columns ];
 
         getMapInput( gameworld );
-        int x = 1+2;
     }
 
     private void getMapInput( Model gameworld ) {
@@ -49,9 +48,9 @@ public class WorldMap {
             InputStream inputStream = getClass().getResourceAsStream("/background/world-map.txt" );
             BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( inputStream ) );
 
-            for( int i = 0; i < gameworld.getMaxScreenRows(); i++ ) {
+            for( int i = 0; i < gameworld.getMaxWorldRows(); i++ ) {
                 String currentLine = bufferedReader.readLine();
-                for ( int j = 0; j < gameworld.getMaxScreenColumns(); j++ ) {
+                for ( int j = 0; j < gameworld.getMaxWorldColumns(); j++ ) {
                     String [] mapInputs = currentLine.split( " " ); // map inputs from current line in an array
                     int currentTile = Integer.parseInt( mapInputs[j] );
 
@@ -60,30 +59,6 @@ public class WorldMap {
                 }
             }
 
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        }
-    }
-
-    public void drawMap ( Model gameworld, Graphics g ) {
-        try {
-            InputStream inputStream = getClass().getResourceAsStream("/background/world-map.txt.txt");
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            int x = 0, y = 0;
-            for ( int i = 0; i < gameworld.getMaxScreenColumns(); i++ ) {
-                // get current line of map input
-                String currentLine = bufferedReader.readLine();
-                for ( int j = 0; j < gameworld.getMaxScreenRows(); j++ ) {
-                    String [] mapInputs = currentLine.split( " " ); // map inputs from current line in an array
-                    int currentTile = Integer.parseInt( mapInputs[j] );
-                    g.drawImage(tiles[currentTile].getTile(),
-                            x, y,
-                            gameworld.getScaledTileSize(), gameworld.getScaledTileSize(), null);
-                    y += gameworld.getScaledTileSize();
-                }
-                y = 0;
-                x += gameworld.getScaledTileSize();
-            }
         } catch ( IOException e ) {
             e.printStackTrace();
         }

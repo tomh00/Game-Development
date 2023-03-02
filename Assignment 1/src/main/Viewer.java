@@ -144,17 +144,20 @@ public class Viewer extends JPanel {
 //
 	private void drawWorldMap( WorldMap worldMap, Graphics g ) {
 		// iterate through worldmap map array and display each tile
-		for( int row = 0, y = 0; row < worldMap.getRows(); row++, y += gameworld.getScaledTileSize() ) {
-			for( int column = 0, x = 0; column < worldMap.getColumns(); column++, x += gameworld.getScaledTileSize() ) {
+		for( int row = 0, y = 0; row < gameworld.getMaxWorldRows(); row++, y += gameworld.getScaledTileSize() ) {
+			for( int column = 0, x = 0; column < gameworld.getMaxWorldColumns(); column++, x += gameworld.getScaledTileSize() ) {
 				int tile = worldMap.getMap()[ row ][ column ];
+
+				int screenX = x - ( int ) gameworld.getPlayer().getCentre().getX();
+				int screenY = y - ( int ) gameworld.getPlayer().getCentre().getY();
+
 				g.drawImage( worldMap.getTiles()[tile].getTile(),
-						x,y,
+						screenX, screenY,
 						gameworld.getScaledTileSize(), gameworld.getScaledTileSize(),
 						null );
 			}
 		}
 	}
-//
 ////	private void drawBackground(Graphics g)
 ////	{
 ////		File TextureToLoad = new File("res/Game background.jpg");  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE

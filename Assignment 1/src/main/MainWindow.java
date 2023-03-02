@@ -44,7 +44,7 @@ public class MainWindow {
 	private   JLabel BackgroundImageForStartMenu;
 	  
 	public MainWindow() {
-		frame.setSize(1000, 1000);  // you can customise this later and adapt it to change on size.
+		frame.setSize(975, 760);  // you can customise this later and adapt it to change on size.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   //If exit // you can modify with your way of quitting , just is a template.
 		//frame.setLayout(null);
 		frame.add(canvas);

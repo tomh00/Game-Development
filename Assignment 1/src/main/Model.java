@@ -41,13 +41,23 @@ public class Model {
 	 private  CopyOnWriteArrayList<GameObject> BulletList  = new CopyOnWriteArrayList<GameObject>();
 	 private int Score=0;*/
 
+	// project uses tiles for sprites and the game world
+	// using 16x16 tiles and scaling them up 3 times
 	private final int tileSize = 16;
 	private final int scale = 3;
 	private final int scaledTileSize = tileSize * scale;
+
+	// using previously defined tiles to create screen boundaries
 	private final int maxScreenColumns = 20;
-	private final int maxScreenRows = 20;
+	private final int maxScreenRows = 15;
 	private final int screenHeight = scaledTileSize * maxScreenRows;
 	private final int screenWidth = scaledTileSize * maxScreenColumns;
+
+	// World map is larger than the screen so has seperate boundaries
+	private final int maxWorldColumns = 26;
+	private final int maxWorldRows = 23;
+	private final int worldWidth = scaledTileSize * maxWorldColumns;
+	private final int worldHeight = scaledTileSize * maxWorldRows;
 
 	public Model() {
 		//setup game world
@@ -230,6 +240,10 @@ public class Model {
 	public int getScaledTileSize () { return scaledTileSize; }
 	public int getScreenHeight() { return screenHeight; }
 	public int getScreenWidth() { return screenWidth; }
+	public int getMaxWorldColumns() { return maxWorldColumns; }
+	public int getMaxWorldRows() { return maxWorldRows; }
+	public int getWorldHeight() { return worldHeight; }
+	public int getWorldWidth() { return worldWidth; }
 	/*public CopyOnWriteArrayList<GameObject> getEnemies() {
 		return EnemiesList;
 	}
