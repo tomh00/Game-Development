@@ -43,7 +43,7 @@ public class Viewer extends JPanel {
 	private final int tileSize = 16;
 	private final int scale = 3;
 	private final int scaledTileSize = tileSize * scale;
-	private final int maxScreenColumns = 21;
+	private final int maxScreenColumns = 20;
 	private final int maxScreenRows = 20;
 	private final int screenHeight = scaledTileSize * maxScreenRows;
 	private final int screenWidth = scaledTileSize * maxScreenColumns;
