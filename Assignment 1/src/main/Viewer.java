@@ -143,18 +143,30 @@ public class Viewer extends JPanel {
 //	}
 //
 	private void drawWorldMap( WorldMap worldMap, Graphics g ) {
-		// iterate through worldmap map array and display each tile
+		// iterate through worldmap map array and draw the tiles
 		for( int row = 0, y = 0; row < gameworld.getMaxWorldRows(); row++, y += gameworld.getScaledTileSize() ) {
 			for( int column = 0, x = 0; column < gameworld.getMaxWorldColumns(); column++, x += gameworld.getScaledTileSize() ) {
 				int tile = worldMap.getMap()[ row ][ column ];
 
-				int screenX = x - ( int ) gameworld.getPlayer().getCentre().getX() + gameworld.getScreenWidth() / 2;
-				int screenY = y - ( int ) gameworld.getPlayer().getCentre().getY() + gameworld.getScreenHeight() / 2;
+				// draw tiles relative to player position in the world
+				// subtract the player position in the world from the tile position in the world and offset with the player screen position (centre)
+				int tileScreenPosX = x - ( int ) gameworld.getPlayer().getCentre().getX() + gameworld.getScreenWidth() / 2;
+				int tileScreenPosY = y - ( int ) gameworld.getPlayer().getCentre().getY() + gameworld.getScreenHeight() / 2;
 
-				g.drawImage( worldMap.getTiles()[tile].getTile(),
-						screenX, screenY,
-						gameworld.getScaledTileSize(), gameworld.getScaledTileSize(),
-						null );
+				// only draw tiles that are within the boundary of the screen
+				int screenBoundaryLeft = ( int ) gameworld.getPlayer().getCentre().getX() - ( gameworld.getScreenWidth() / 2 );
+				int screenBoundaryRight = ( int ) gameworld.getPlayer().getCentre().getX() + ( gameworld.getScreenWidth() / 2 );
+				int screenBoundaryUp = ( int ) gameworld.getPlayer().getCentre().getY() - ( gameworld.getScreenHeight() / 2 );
+				int screenBoundaryDown = ( int ) gameworld.getPlayer().getCentre().getY() + ( gameworld.getScreenHeight() / 2 );
+
+				if ( x + gameworld.getScaledTileSize() > screenBoundaryLeft && x - gameworld.getScaledTileSize() < screenBoundaryRight &&
+					y + gameworld.getScaledTileSize() > screenBoundaryUp && y - gameworld.getScaledTileSize() < screenBoundaryDown ) {
+
+					g.drawImage(worldMap.getTiles()[tile].getTile(),
+							tileScreenPosX, tileScreenPosY,
+							gameworld.getScaledTileSize(), gameworld.getScaledTileSize(),
+							null);
+				}
 			}
 		}
 	}

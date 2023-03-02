@@ -62,7 +62,7 @@ public class Model {
 	public Model() {
 		//setup game world
 		//Player
-		Player= new Player( 50, 50,new Point3f( scaledTileSize * 9, scaledTileSize * 9,0 ), 2 );
+		Player= new Player( 50, 50,new Point3f( scaledTileSize * 0, scaledTileSize * 9,0 ), 2 );
 		worldMap = new WorldMap( this );
 		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));
 
