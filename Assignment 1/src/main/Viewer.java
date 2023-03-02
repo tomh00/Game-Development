@@ -185,8 +185,8 @@ public class Viewer extends JPanel {
 //
 	private void drawPlayer( Graphics g ) {
 		g.drawImage( gameworld.getPlayer().getCurrentImage(),
-				(int)gameworld.getPlayer().getCentre().getX(),
-				(int)gameworld.getPlayer().getCentre().getY(),
+				gameworld.getScreenWidth() / 2,
+				gameworld.getScreenHeight() / 2,
 				gameworld.getScaledTileSize(),
 				gameworld.getScaledTileSize(),
 				null );
