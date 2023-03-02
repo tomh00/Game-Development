@@ -148,8 +148,8 @@ public class Viewer extends JPanel {
 			for( int column = 0, x = 0; column < gameworld.getMaxWorldColumns(); column++, x += gameworld.getScaledTileSize() ) {
 				int tile = worldMap.getMap()[ row ][ column ];
 
-				int screenX = x - ( int ) gameworld.getPlayer().getCentre().getX();
-				int screenY = y - ( int ) gameworld.getPlayer().getCentre().getY();
+				int screenX = x - ( int ) gameworld.getPlayer().getCentre().getX() + gameworld.getScreenWidth() / 2;
+				int screenY = y - ( int ) gameworld.getPlayer().getCentre().getY() + gameworld.getScreenHeight() / 2;
 
 				g.drawImage( worldMap.getTiles()[tile].getTile(),
 						screenX, screenY,
