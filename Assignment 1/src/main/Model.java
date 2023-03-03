@@ -64,8 +64,7 @@ public class Model {
 		//Player
 		Player= new Player( 50, 50,new Point3f( scaledTileSize * 0, scaledTileSize * 9,0 ), 2 );
 		worldMap = new WorldMap( this );
-		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));
-
+		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));wwwdasddddwdas
 		//Enemies  starting with four 
 		
 		/*EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*50+400 ),0,0)));
