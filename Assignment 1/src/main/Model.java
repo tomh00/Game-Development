@@ -60,7 +60,7 @@ public class Model {
 	public Model() {
 		//setup game world
 		//Player
-		player = new Player( 50, 50,new Point3f( scaledTileSize * 9, scaledTileSize * 9,0 ), 2 );
+		player = new Player( 50, 50,new Point3f( scaledTileSize * 12, scaledTileSize * 14,0 ), 2 );
 		worldMap = new WorldMap( this );
 		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));wwwdasddddwdas
 		//Enemies  starting with four 
@@ -230,15 +230,19 @@ public class Model {
 
 		// find rows columns of each of the collision rectangle points: divide by the tile size
 		int leftColumn = collisionAreaLeftX / scaledTileSize;
+		System.out.println(leftColumn);
 		int rightColumn = collisionAreaRightX / scaledTileSize;
 		int topRow = collisionAreaTopY / scaledTileSize;
 		int bottomRow = collisionAreaBottomY / scaledTileSize;
 
 		if ( direction == 0 ) {
-			// find row and column of top two points ater moving upward
-			leftColumn = ( leftColumn + getPlayer().getSpeed() ) / scaledTileSize;
+			// find row and column of top two points after moving left
+			leftColumn = ( leftColumn * scaledTileSize - getPlayer().getSpeed() );
+			leftColumn = leftColumn / scaledTileSize + 1;
 			int tile1 = worldMap.getMap() [ topRow ][ leftColumn ];
 			int tile2 = worldMap.getMap() [ bottomRow ][ leftColumn ];
+//			System.out.print( "(" + " " + topRow + ", " + leftColumn + " )" );
+//			System.out.println( "(" + " " + bottomRow + ", " + leftColumn + " )" );
 
 			// if it is going to be touching a collidable tile then set collison to true
 			if ( worldMap.getTiles()[ tile1 ].isObstruction() || worldMap.getTiles()[ tile2 ].isObstruction() ) {
