@@ -23,10 +23,10 @@ public class WorldMap {
     public WorldMap( Model gameworld ){
         // create list of tiles
         try {
-            Tile roadTile = new Tile( ImageIO.read( getClass().getResourceAsStream( "/background/road.png" ) ) );
-            Tile grassTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/grass.png" ) ) );
-            Tile pathTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/path.png" ) ) );
-            Tile roadLineTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/road-line.png" ) ) );
+            Tile roadTile = new Tile( ImageIO.read( getClass().getResourceAsStream( "/background/road.png" ) ), false );
+            Tile grassTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/grass.png" ) ), true );
+            Tile pathTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/path.png" ) ), false );
+            Tile roadLineTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/road-line.png" ) ), false );
             tiles = new Tile[4];
             tiles[ 0 ] = grassTile;
             tiles[ 1 ] = pathTile;

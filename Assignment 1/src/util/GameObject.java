@@ -41,6 +41,8 @@ public class GameObject {
 	private boolean hasTextured=false;
 	private String textureLocation; 
 	private String blanktexture="res/blankSprite.png";
+
+	private boolean isInCollision;
 	
 	public GameObject() {  
 		
@@ -54,6 +56,7 @@ public class GameObject {
 		 this.centre =centre;
 		 */
 		 this.speed = speed;
+		 isInCollision = false;
 	}
 
 	public void animateSprite(){
@@ -110,6 +113,10 @@ public class GameObject {
 	public void setSpeed(int speed){ this.speed = speed; }
 	public void setWidth(int width){ this.width = width; }
 	public void setHeight(int height){ this.height = height; }
+
+	public void setIsInCollision( boolean isInCollision ) { this.isInCollision = isInCollision; }
+
+	public boolean isInCollision() { return isInCollision; }
 }
 
 /*

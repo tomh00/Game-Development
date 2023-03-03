@@ -1,9 +1,14 @@
 package util;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.io.IOException;
 
 public class Player extends GameObject{
+    // players collision area
+    private int collisionRectSize = 32;
+    private final Rectangle collisionArea;
+
     public Player(int width, int height, Point3f centre, int speed){
         try {
             forward1 = ImageIO.read(getClass().getResourceAsStream("/Main Character/back-facing-dude-1.png"));
@@ -22,5 +27,12 @@ public class Player extends GameObject{
         this.setHeight(height);
         this.setCentre(centre);
         this.setSpeed(speed);
+
+        collisionArea = new Rectangle( 8, 8 + collisionRectSize, 16, 16 + collisionRectSize );
+
     }
+
+    public Rectangle getCollisionArea() { return collisionArea; }
+
+    public int getCollisionRectSize() { return collisionRectSize; }
 }
