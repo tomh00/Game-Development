@@ -48,8 +48,7 @@ public class Controller implements KeyListener {
 	   
 	@Override
 	// Key pressed , will keep triggering 
-	public void keyTyped(KeyEvent e) { 
-		 
+	public void keyTyped(KeyEvent e) {
 	}
 
 	/*
@@ -59,7 +58,7 @@ public class Controller implements KeyListener {
 	 */
 	@Override
 	public void keyPressed(KeyEvent e) 
-	{ 
+	{
 		switch (e.getKeyChar()) 
 		{
 			case 'a':setKeyAPressed(true);break;  

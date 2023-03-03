@@ -176,10 +176,11 @@ public class Model {
 
 		if (Controller.getInstance().isKeyAPressed()) {
 			detectCollision( 0 );
-			if ( player.isInCollision() ) {
+			if ( ! player.isInCollision() ) {
 				player.getCentre().ApplyVector(
 						new Vector3f(-player.getSpeed(), 0, 0));
 			}
+			player.setIsInCollision( false );
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.left1);
 			} else {
@@ -234,10 +235,10 @@ public class Model {
 		int bottomRow = collisionAreaBottomY / scaledTileSize;
 
 		if ( direction == 0 ) {
-			// find row and column of top two points after moving upward
-			topRow += getPlayer().getSpeed();
+			// find row and column of top two points ater moving upward
+			leftColumn = ( leftColumn + getPlayer().getSpeed() ) / scaledTileSize;
 			int tile1 = worldMap.getMap() [ topRow ][ leftColumn ];
-			int tile2 = worldMap.getMap() [ topRow ][ rightColumn ];
+			int tile2 = worldMap.getMap() [ bottomRow ][ leftColumn ];
 
 			// if it is going to be touching a collidable tile then set collison to true
 			if ( worldMap.getTiles()[ tile1 ].isObstruction() || worldMap.getTiles()[ tile2 ].isObstruction() ) {
@@ -245,14 +246,6 @@ public class Model {
 			}
 
 		}
-	}
-
-	private int getCollisionRow () {
-		return ( int ) player.getCentre().getY() + player.getCollisionArea().y;
-	}
-
-	private int getCollisionCol () {
-		return ( int ) player.getCentre().getX() + player.getCollisionArea().x;
 	}
 
 	public GameObject getPlayer() {

@@ -28,7 +28,7 @@ public class Player extends GameObject{
         this.setCentre(centre);
         this.setSpeed(speed);
 
-        collisionArea = new Rectangle( 8, 8 + collisionRectSize, 16, 16 + collisionRectSize );
+        collisionArea = new Rectangle( 8, 16, collisionRectSize, collisionRectSize );
 
     }
 

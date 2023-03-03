@@ -49,6 +49,7 @@ public class MainWindow {
 		//frame.setLayout(null);
 		frame.add(canvas);
 		frame.setVisible(true);
+		frame.addKeyListener(Controller);
 
 		//canvas.setBounds(0, 0, 1000, 1000);
 		//canvas.setBackground(new Color(255,255,255)); //white background  replaced by Space background but if you remove the background method this will draw a white screen
@@ -61,7 +62,7 @@ public class MainWindow {
 //				startMenuButton.setVisible(false);
 //				BackgroundImageForStartMenu.setVisible(false);
 				canvas.setVisible(true);
-				canvas.addKeyListener(Controller);    //adding the controller to the Canvas
+				//canvas.addKeyListener(Controller);    //adding the controller to the Canvas
 				canvas.setFocusable(true);   // making sure that the Canvas is in focus so keyboard input will be taking in .
 //				startGame=true;
 //				}
