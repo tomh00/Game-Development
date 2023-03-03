@@ -1,7 +1,5 @@
 package main;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import util.GameObject;
 import util.Player;
 import util.Point3f;
@@ -34,7 +32,7 @@ SOFTWARE.
  */ 
 public class Model {
 	
-	 private Player Player;
+	 private Player player;
 	 private WorldMap worldMap;
 	 private Controller controller = Controller.getInstance();
 	 /*private  CopyOnWriteArrayList<GameObject> EnemiesList  = new CopyOnWriteArrayList<GameObject>();
@@ -62,7 +60,7 @@ public class Model {
 	public Model() {
 		//setup game world
 		//Player
-		Player= new Player( 50, 50,new Point3f( scaledTileSize * 0, scaledTileSize * 9,0 ), 2 );
+		player = new Player( 50, 50,new Point3f( scaledTileSize * 9, scaledTileSize * 9,0 ), 2 );
 		worldMap = new WorldMap( this );
 		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));wwwdasddddwdas
 		//Enemies  starting with four 
@@ -170,68 +168,95 @@ public class Model {
 	}*/
 
 	private void playerLogic() {
-		
+
 		// smoother animation is possible if we make a target position  // done but may try to change things for students  
-		 
+
 		//check for movement and if you fired a bullet
-		Player.animateSprite();
-		  
-		if(Controller.getInstance().isKeyAPressed()){
-			Player.getCentre().ApplyVector(
-				new Vector3f(-Player.getSpeed(),0,0));
-			if ( Player.getSpritePosition() == 0 ) {
-				Player.setCurrentImage( Player.left1 );
+		player.animateSprite();
+
+		if (Controller.getInstance().isKeyAPressed()) {
+			detectCollision( 0 );
+			if ( player.isInCollision() ) {
+				player.getCentre().ApplyVector(
+						new Vector3f(-player.getSpeed(), 0, 0));
 			}
-			else {
-				Player.setCurrentImage( Player.left2 );
-			}
-		}
-		
-		if(Controller.getInstance().isKeyDPressed()) {
-			Player.getCentre().ApplyVector( new Vector3f(Player.getSpeed(),0,0));
-			if ( Player.getSpritePosition() == 0 ) {
-				Player.setCurrentImage( Player.right1 );
-			}
-			else {
-				Player.setCurrentImage( Player.right2 );
+			if (player.getSpritePosition() == 0) {
+				player.setCurrentImage(player.left1);
+			} else {
+				player.setCurrentImage(player.left2);
 			}
 		}
 
-		if(Controller.getInstance().isKeyWPressed())
-		{
-			Player.getCentre().ApplyVector( new Vector3f(0,Player.getSpeed(),0));
-			if ( Player.getSpritePosition() == 0 ) {
-				Player.setCurrentImage( Player.forward1 );
-			}
-			else {
-				Player.setCurrentImage( Player.forward2 );
+		if (Controller.getInstance().isKeyDPressed()) {
+			player.getCentre().ApplyVector(new Vector3f(player.getSpeed(), 0, 0));
+			if (player.getSpritePosition() == 0) {
+				player.setCurrentImage(player.right1);
+			} else {
+				player.setCurrentImage(player.right2);
 			}
 		}
 
-		if(Controller.getInstance().isKeySPressed()){
-			Player.getCentre().ApplyVector( new Vector3f(0,-Player.getSpeed(), 0));
-			if ( Player.getSpritePosition() == 0 ) {
-				Player.setCurrentImage( Player.backward1 );
-			}
-			else {
-				Player.setCurrentImage( Player.backward2 );
+		if (Controller.getInstance().isKeyWPressed()) {
+			player.getCentre().ApplyVector(new Vector3f(0, player.getSpeed(), 0));
+			if (player.getSpritePosition() == 0) {
+				player.setCurrentImage(player.forward1);
+			} else {
+				player.setCurrentImage(player.forward2);
 			}
 		}
 
-		/*if(main.Controller.getInstance().isKeySpacePressed())
-		{
-			CreateBullet();
-			main.Controller.getInstance().setKeySpacePressed(false);
-		}*/
+		if (Controller.getInstance().isKeySPressed()) {
+			player.getCentre().ApplyVector(new Vector3f(0, -player.getSpeed(), 0));
+			if (player.getSpritePosition() == 0) {
+				player.setCurrentImage(player.backward1);
+			} else {
+				player.setCurrentImage(player.backward2);
+			}
+		}
 	}
 
-	/*private void CreateBullet() {
-		BulletList.add(new GameObject("res/Bullet.png",32,64,new Point3f(Player.getCentre().getX(),Player.getCentre().getY(),0.0f)));
-		
+	private void detectCollision( int direction ) {
+		// direction 0 = left
+		// direction 1 = right
+		// direction 2 = up
+		// direction 3 = down
+
+		// find collision points coordinates in the world
+		int collisionAreaLeftX = ( int ) player.getCentre().getX() + player.getCollisionArea().x;
+		int collisionAreaRightX = collisionAreaLeftX + player.getCollisionRectSize();
+		int collisionAreaTopY = ( int ) player.getCentre().getY() + player.getCollisionArea().y;
+		int collisionAreaBottomY = collisionAreaTopY + player.getCollisionRectSize();
+
+		// find rows columns of each of the collision rectangle points: divide by the tile size
+		int leftColumn = collisionAreaLeftX / scaledTileSize;
+		int rightColumn = collisionAreaRightX / scaledTileSize;
+		int topRow = collisionAreaTopY / scaledTileSize;
+		int bottomRow = collisionAreaBottomY / scaledTileSize;
+
+		if ( direction == 0 ) {
+			// find row and column of top two points after moving upward
+			topRow += getPlayer().getSpeed();
+			int tile1 = worldMap.getMap() [ topRow ][ leftColumn ];
+			int tile2 = worldMap.getMap() [ topRow ][ rightColumn ];
+
+			// if it is going to be touching a collidable tile then set collison to true
+			if ( worldMap.getTiles()[ tile1 ].isObstruction() || worldMap.getTiles()[ tile2 ].isObstruction() ) {
+				player.setIsInCollision( true );
+			}
+
+		}
 	}
-*/
+
+	private int getCollisionRow () {
+		return ( int ) player.getCentre().getY() + player.getCollisionArea().y;
+	}
+
+	private int getCollisionCol () {
+		return ( int ) player.getCentre().getX() + player.getCollisionArea().x;
+	}
+
 	public GameObject getPlayer() {
-		return Player;
+		return player;
 	}
 	public WorldMap getWorldMap() { return worldMap; }
 	public int getMaxScreenColumns () { return maxScreenColumns; }

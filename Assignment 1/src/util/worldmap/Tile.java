@@ -8,12 +8,15 @@ import java.io.IOException;
 
 public class Tile {
     private BufferedImage tile;
-    private boolean collision;
+    private boolean isObstruction;
 
-    public Tile (BufferedImage tile ) {
+    public Tile ( BufferedImage tile, boolean isObstruction ) {
         this.tile = tile;
+        this.isObstruction = isObstruction;
     }
 
     public BufferedImage getTile () { return tile; }
 
+    public boolean isObstruction() { return isObstruction; }
+    public void setIsObsruction( boolean obsruction ) { isObstruction = obsruction;}
 }
