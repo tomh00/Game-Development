@@ -6,6 +6,9 @@ import util.Point3f;
 import util.Vector3f;
 import util.worldmap.WorldMap;
 
+import java.awt.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /*
  * Created by Abraham Campbell on 15/01/2020.
  *   Copyright (c) 2020  Abraham Campbell
@@ -35,9 +38,9 @@ public class Model {
 	 private Player player;
 	 private WorldMap worldMap;
 	 private Controller controller = Controller.getInstance();
-	 /*private  CopyOnWriteArrayList<GameObject> EnemiesList  = new CopyOnWriteArrayList<GameObject>();
-	 private  CopyOnWriteArrayList<GameObject> BulletList  = new CopyOnWriteArrayList<GameObject>();
-	 private int Score=0;*/
+	 private CopyOnWriteArrayList<GameObject> redBulls = new CopyOnWriteArrayList<GameObject>();
+	 //private  CopyOnWriteArrayList<GameObject> BulletList  = new CopyOnWriteArrayList<GameObject>();
+	 //private int Score=0;
 
 	// project uses tiles for sprites and the game world
 	// using 16x16 tiles and scaling them up 3 times
@@ -60,17 +63,23 @@ public class Model {
 	public Model() {
 		//setup game world
 		//Player
-		player = new Player( 50, 50,new Point3f( scaledTileSize * 12, scaledTileSize * 14,0 ), 2 );
+		player = new Player( 50, 50,
+				new Point3f( scaledTileSize * 12, scaledTileSize * 14,0 ),
+				2 ,
+				new Rectangle( 8, 16, 32, 32 ) );
+
 		worldMap = new WorldMap( this );
 		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));wwwdasddddwdas
 		//Enemies  starting with four 
 		
-		/*EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*50+400 ),0,0)));
-		EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*50+500 ),0,0)));
-		EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+500 ),0,0)));
-		EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+400 ),0,0)));
-		*/
-		
+		redBulls.add( new GameObject( "res/UFO.png", scaledTileSize, scaledTileSize,
+				new Point3f( ( ( float ) Math.random() * 50 + 500 ), 0, 0 ),
+				2, new Rectangle( 0, 0, scaledTileSize, scaledTileSize ) ) );
+		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*50+500 ),0,0)));
+		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+500 ),0,0)));
+		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+400 ),0,0)));
+
+		int x = 1 + 2;
 	    
 	}
 	
@@ -80,7 +89,7 @@ public class Model {
 		// Player Logic first 
 		playerLogic();
 		// Enemy Logic next
-		//enemyLogic();
+		redBullLogic();
 		// Bullets move next 
 		//bulletLogic();
 		// interactions between objects 
@@ -120,32 +129,38 @@ public class Model {
 		
 	}
 
-	/*private void enemyLogic() {
+	private void redBullLogic() {
 		// TODO Auto-generated method stub
-		for (GameObject temp : EnemiesList) 
+		for (GameObject temp : redBulls)
 		{
 		    // Move enemies 
 			  
-			temp.getCentre().ApplyVector(new Vector3f(0,-1,0));
+			temp.getCentre().ApplyVector( new Vector3f(0,-temp.getDefaultSpeed(),0) );
 			 
 			 
 			//see if they get to the top of the screen ( remember 0 is the top 
-			if (temp.getCentre().getY()==900.0f)  // current boundary need to pass value to model 
+			if ( temp.getCentre().getY()==900.0f )  // current boundary need to pass value to model
 			{
-				EnemiesList.remove(temp);
+				redBulls.remove( temp );
 				// enemies win so score decreased 
-				Score--;
+				//Score--;
 			} 
 		}
 		
-		if (EnemiesList.size()<2)
+		if ( redBulls.size()<1 )
 		{
-			while (EnemiesList.size()<6)
+			while ( redBulls.size()<1 )
 			{
-				EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*1000),0,0))); 
+				redBulls.add( new GameObject( "res/UFO.png", scaledTileSize, scaledTileSize,
+						new Point3f( ( ( float ) Math.random() * 1000 ), 0, 0 ),
+						2, new Rectangle( 0, 0, scaledTileSize, scaledTileSize ) ) );
 			}
 		}
-	}*/
+	}
+
+	private void detectObjectCollision() {
+		//TODO
+	}
 
 	/*private void bulletLogic() {
 		// TODO Auto-generated method stub
@@ -170,16 +185,15 @@ public class Model {
 	private void playerLogic() {
 
 		// smoother animation is possible if we make a target position  // done but may try to change things for students  
-
-		//check for movement and if you fired a bullet
 		player.animateSprite();
 
 		if (Controller.getInstance().isKeyAPressed()) {
-			detectCollision( 0 );
-			if ( ! player.isInCollision() ) {
-				player.getCentre().ApplyVector(
-						new Vector3f(-player.getSpeed(), 0, 0));
+			detectCollision( 0, player );
+			if (  player.isInCollision() ) {
+				player.setCurrentSpeed( 1);
 			}
+			player.getCentre().ApplyVector(
+					new Vector3f(-player.getCurrentSpeed(), 0, 0));
 			player.setIsInCollision( false );
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.left1);
@@ -189,7 +203,11 @@ public class Model {
 		}
 
 		if (Controller.getInstance().isKeyDPressed()) {
-			player.getCentre().ApplyVector(new Vector3f(player.getSpeed(), 0, 0));
+			detectCollision( 1, player );
+			if ( ! player.isInCollision() ) {
+				player.getCentre().ApplyVector(new Vector3f(player.getDefaultSpeed(), 0, 0));
+			}
+			player.setIsInCollision( false );
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.right1);
 			} else {
@@ -198,7 +216,11 @@ public class Model {
 		}
 
 		if (Controller.getInstance().isKeyWPressed()) {
-			player.getCentre().ApplyVector(new Vector3f(0, player.getSpeed(), 0));
+			detectCollision( 2, player );
+			if ( ! player.isInCollision() ) {
+				player.getCentre().ApplyVector(new Vector3f(0, player.getDefaultSpeed(), 0));
+			}
+			player.setIsInCollision( false );
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.forward1);
 			} else {
@@ -207,48 +229,81 @@ public class Model {
 		}
 
 		if (Controller.getInstance().isKeySPressed()) {
-			player.getCentre().ApplyVector(new Vector3f(0, -player.getSpeed(), 0));
+			detectCollision( 3, player );
+			if ( !player.isInCollision() ){
+				player.getCentre().ApplyVector(new Vector3f(0, -player.getDefaultSpeed(), 0));
+			}
+			player.setIsInCollision( false );
 			if (player.getSpritePosition() == 0) {
-				player.setCurrentImage(player.backward1);
+				player.setCurrentImage( player.backward1 );
 			} else {
-				player.setCurrentImage(player.backward2);
+				player.setCurrentImage( player.backward2 );
 			}
 		}
 	}
 
-	private void detectCollision( int direction ) {
+	private void detectCollision( int direction, GameObject gameObject ) {
 		// direction 0 = left
 		// direction 1 = right
 		// direction 2 = up
 		// direction 3 = down
 
 		// find collision points coordinates in the world
-		int collisionAreaLeftX = ( int ) player.getCentre().getX() + player.getCollisionArea().x;
-		int collisionAreaRightX = collisionAreaLeftX + player.getCollisionRectSize();
-		int collisionAreaTopY = ( int ) player.getCentre().getY() + player.getCollisionArea().y;
-		int collisionAreaBottomY = collisionAreaTopY + player.getCollisionRectSize();
+		int collisionAreaLeftX = ( int ) gameObject.getCentre().getX() + gameObject.getCollisionArea().x;
+		int collisionAreaRightX = collisionAreaLeftX + gameObject.getCollisionRectSize();
+		int collisionAreaTopY = ( int ) gameObject.getCentre().getY() + gameObject.getCollisionArea().y;
+		int collisionAreaBottomY = collisionAreaTopY + gameObject.getCollisionRectSize();
 
 		// find rows columns of each of the collision rectangle points: divide by the tile size
 		int leftColumn = collisionAreaLeftX / scaledTileSize;
-		System.out.println(leftColumn);
 		int rightColumn = collisionAreaRightX / scaledTileSize;
 		int topRow = collisionAreaTopY / scaledTileSize;
 		int bottomRow = collisionAreaBottomY / scaledTileSize;
 
-		if ( direction == 0 ) {
-			// find row and column of top two points after moving left
-			leftColumn = ( leftColumn * scaledTileSize - getPlayer().getSpeed() );
-			leftColumn = leftColumn / scaledTileSize + 1;
-			int tile1 = worldMap.getMap() [ topRow ][ leftColumn ];
-			int tile2 = worldMap.getMap() [ bottomRow ][ leftColumn ];
-//			System.out.print( "(" + " " + topRow + ", " + leftColumn + " )" );
-//			System.out.println( "(" + " " + bottomRow + ", " + leftColumn + " )" );
+		switch ( direction ) {
+			case 0 :
+				// find row and column of top two points after moving left
+				int tile1 = getNextTileNum( leftColumn, topRow, -player.getDefaultSpeed(), "horizontal" );
+				int tile2 = getNextTileNum( leftColumn, bottomRow, -player.getDefaultSpeed(), "horizontal" );
+				// if it is going to be touching a collidable tile then set collison to true
+				setCollisionStatus( tile1, tile2, player );
+				break;
+			case 1 :
+				int tile3 = getNextTileNum( rightColumn, topRow, +player.getDefaultSpeed(), "horizontal" );
+				int tile4 = getNextTileNum( rightColumn, bottomRow, +player.getDefaultSpeed(), "horizontal" );
+				setCollisionStatus( tile3, tile4, player );
+				break;
+			case 2 :
+				int tile5 = getNextTileNum( topRow, rightColumn, -player.getDefaultSpeed(), "vertical" );
+				int tile6 = getNextTileNum( topRow, leftColumn, -player.getDefaultSpeed(), "vertical" );
+				setCollisionStatus( tile5, tile6, player );
+			case 3 :
+				int tile7 = getNextTileNum( bottomRow, rightColumn, +player.getDefaultSpeed(), "vertical" );
+				int tile8 = getNextTileNum( bottomRow, leftColumn, +player.getDefaultSpeed(), "vertical" );
+				setCollisionStatus( tile7, tile8, player );
+		}
 
-			// if it is going to be touching a collidable tile then set collison to true
-			if ( worldMap.getTiles()[ tile1 ].isObstruction() || worldMap.getTiles()[ tile2 ].isObstruction() ) {
-				player.setIsInCollision( true );
-			}
+	}
 
+	private int getNextTileNum( int movingEdge, int staticEdge, int shift, String plane) {
+		movingEdge = ( ( ( movingEdge * scaledTileSize ) + shift ) / scaledTileSize ) ;
+
+		// hardcoded granular adjustment to collision location
+		if ( shift < 0 ) { movingEdge++; }
+
+
+		switch ( plane ) {
+			case "vertical" :
+				return worldMap.getMap()[ movingEdge ][ staticEdge ];
+			case "horizontal":
+				return worldMap.getMap()[ staticEdge ][ movingEdge ];
+		}
+		return 0;
+	}
+
+	private void setCollisionStatus(int tileType1, int tileType2, GameObject gameObject ) {
+		if ( worldMap.getTiles()[ tileType1 ].isObstruction() || worldMap.getTiles()[ tileType2 ].isObstruction() ) {
+			gameObject.setIsInCollision( true );
 		}
 	}
 
@@ -265,10 +320,8 @@ public class Model {
 	public int getMaxWorldRows() { return maxWorldRows; }
 	public int getWorldHeight() { return worldHeight; }
 	public int getWorldWidth() { return worldWidth; }
-	/*public CopyOnWriteArrayList<GameObject> getEnemies() {
-		return EnemiesList;
-	}
-	public CopyOnWriteArrayList<GameObject> getBullets() {
+	public CopyOnWriteArrayList<GameObject> getRedBulls() { return redBulls; }
+	/*public CopyOnWriteArrayList<GameObject> getBullets() {
 		return BulletList;
 	}
 	public int getScore() { 

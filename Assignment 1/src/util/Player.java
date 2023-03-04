@@ -5,11 +5,8 @@ import java.awt.*;
 import java.io.IOException;
 
 public class Player extends GameObject{
-    // players collision area
-    private int collisionRectSize = 32;
-    private final Rectangle collisionArea;
 
-    public Player(int width, int height, Point3f centre, int speed){
+    public Player(int width, int height, Point3f centre, int speed, Rectangle rectangle){
         try {
             forward1 = ImageIO.read(getClass().getResourceAsStream("/Main Character/back-facing-dude-1.png"));
             forward2 = ImageIO.read(getClass().getResourceAsStream("/Main Character/back-facing-dude-2.png"));
@@ -26,13 +23,7 @@ public class Player extends GameObject{
         this.setWidth(width);
         this.setHeight(height);
         this.setCentre(centre);
-        this.setSpeed(speed);
-
-        collisionArea = new Rectangle( 8, 16, collisionRectSize, collisionRectSize );
-
+        this.setDefaultSpeed(speed);
+        this.setCollisionArea( rectangle );
     }
-
-    public Rectangle getCollisionArea() { return collisionArea; }
-
-    public int getCollisionRectSize() { return collisionRectSize; }
 }

@@ -1,5 +1,6 @@
 package util;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /*
@@ -27,15 +28,17 @@ SOFTWARE.
    (MIT LICENSE ) e.g do what you want with this :-) 
  */ 
 public class GameObject {
-	private int speed;
+	private int defaultSpeed;
+	private int currentSpeed;
 
 	// images for animating a game object
 	public BufferedImage forward1, forward2, backward1, backward2, left1, left2, right1, right2;
 	private BufferedImage currentImage;
 	private int spritePosition = 0;
 	private int frameNum = 0;
-	
-	private Point3f centre= new Point3f(0,0,0);			// Centre of object, using 3D as objects may be scaled  
+	private Point3f centre= new Point3f(0,0,0); // Centre of object, using 3D as objects may be scaled
+	private int collisionRectSize = 32;
+	private Rectangle collisionArea;
 	private int width=10;
 	private int height=10;
 	private boolean hasTextured=false;
@@ -44,19 +47,21 @@ public class GameObject {
 
 	private boolean isInCollision;
 	
-	public GameObject() {  
-		
-	}
-	
-    public GameObject(String textureLocation,int width,int height,Point3f centre, int speed) {
-    	 hasTextured=true;
+    public GameObject(String textureLocation,int width,int height,Point3f centre, int speed, Rectangle rectangle) {
+		 hasTextured=true;
 
-    	 /*this.width=width;
+		 this.textureLocation = textureLocation;
+		 this.width=width;
 		 this.height=height;
 		 this.centre =centre;
-		 */
-		 this.speed = speed;
+
+		 this.defaultSpeed = speed;
 		 isInCollision = false;
+		 collisionArea = rectangle;
+	}
+
+	public GameObject() {
+
 	}
 
 	public void animateSprite(){
@@ -100,7 +105,7 @@ public class GameObject {
 		return blanktexture; 
 	}
 
-	public int getSpeed(){ return speed; }
+	public int getDefaultSpeed(){ return defaultSpeed; }
 
 	public BufferedImage getCurrentImage(){ return currentImage; }
 	public int getSpritePosition() { return spritePosition; }
@@ -110,13 +115,18 @@ public class GameObject {
 		this.currentImage = currentImage;
 	}
 
-	public void setSpeed(int speed){ this.speed = speed; }
+	public void setDefaultSpeed(int defaultSpeed){ this.defaultSpeed = defaultSpeed; }
 	public void setWidth(int width){ this.width = width; }
 	public void setHeight(int height){ this.height = height; }
 
 	public void setIsInCollision( boolean isInCollision ) { this.isInCollision = isInCollision; }
 
 	public boolean isInCollision() { return isInCollision; }
+	public Rectangle getCollisionArea() { return collisionArea; }
+	public int getCollisionRectSize() { return collisionRectSize; }
+	public void setCollisionArea( Rectangle rectangle ) { collisionArea = rectangle; }
+	public int getCurrentSpeed() { return currentSpeed; }
+	public void setCurrentSpeed( int speed ) { this.currentSpeed = currentSpeed; }
 }
 
 /*
