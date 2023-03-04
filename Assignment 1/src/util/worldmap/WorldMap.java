@@ -40,6 +40,7 @@ public class WorldMap {
         map = new int[ rows ][ columns ];
 
         getMapInput( gameworld );
+        int x = 1+23;
     }
 
     private void getMapInput( Model gameworld ) {

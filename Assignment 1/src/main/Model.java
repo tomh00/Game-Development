@@ -59,7 +59,7 @@ public class Model {
 
 	// World map is larger than the screen so has seperate boundaries
 	private final int maxWorldColumns = 27;
-	private final int maxWorldRows = 23;
+	private final int maxWorldRows = 84;
 	private final int worldWidth = scaledTileSize * maxWorldColumns;
 	private final int worldHeight = scaledTileSize * maxWorldRows;
 
@@ -67,7 +67,7 @@ public class Model {
 		//setup game world
 		//Player
 		player = new Player( 50, 50,
-				new Point3f( scaledTileSize * 12, scaledTileSize * 14,0 ),
+				new Point3f( scaledTileSize * 12, scaledTileSize * 82,0 ),
 				2 ,
 				new Rectangle( 8, 16, 32, 32 ) );
 
@@ -142,7 +142,7 @@ public class Model {
 		{
 		    // Move enemies 
 			  
-			temp.getCentre().ApplyVector( new Vector3f(0,-temp.getDefaultSpeed(),0) );
+			//temp.getCentre().ApplyVector( new Vector3f(0,-temp.getDefaultSpeed(),0) );
 			 
 			 
 			//see if they get to the top of the screen ( remember 0 is the top 
