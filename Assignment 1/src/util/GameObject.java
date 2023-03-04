@@ -126,7 +126,7 @@ public class GameObject {
 	public int getCollisionRectSize() { return collisionRectSize; }
 	public void setCollisionArea( Rectangle rectangle ) { collisionArea = rectangle; }
 	public int getCurrentSpeed() { return currentSpeed; }
-	public void setCurrentSpeed( int speed ) { this.currentSpeed = currentSpeed; }
+	public void setCurrentSpeed( int speed ) { this.currentSpeed = speed; }
 }
 
 /*

@@ -190,7 +190,7 @@ public class Model {
 		if (Controller.getInstance().isKeyAPressed()) {
 			detectCollision( 0, player );
 			if (  player.isInCollision() ) {
-				player.setCurrentSpeed( 1);
+				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
 			}
 			player.getCentre().ApplyVector(
 					new Vector3f(-player.getCurrentSpeed(), 0, 0));
@@ -204,10 +204,10 @@ public class Model {
 
 		if (Controller.getInstance().isKeyDPressed()) {
 			detectCollision( 1, player );
-			if ( ! player.isInCollision() ) {
-				player.getCentre().ApplyVector(new Vector3f(player.getDefaultSpeed(), 0, 0));
+			if ( player.isInCollision() ) {
+				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
 			}
-			player.setIsInCollision( false );
+			player.getCentre().ApplyVector(new Vector3f(player.getCurrentSpeed(), 0, 0));
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.right1);
 			} else {
@@ -217,10 +217,10 @@ public class Model {
 
 		if (Controller.getInstance().isKeyWPressed()) {
 			detectCollision( 2, player );
-			if ( ! player.isInCollision() ) {
-				player.getCentre().ApplyVector(new Vector3f(0, player.getDefaultSpeed(), 0));
+			if ( player.isInCollision() ) {
+				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
 			}
-			player.setIsInCollision( false );
+			player.getCentre().ApplyVector(new Vector3f(0, player.getCurrentSpeed(), 0));
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.forward1);
 			} else {
@@ -230,16 +230,19 @@ public class Model {
 
 		if (Controller.getInstance().isKeySPressed()) {
 			detectCollision( 3, player );
-			if ( !player.isInCollision() ){
-				player.getCentre().ApplyVector(new Vector3f(0, -player.getDefaultSpeed(), 0));
+			if ( player.isInCollision() ){
+				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
 			}
-			player.setIsInCollision( false );
+			player.getCentre().ApplyVector(new Vector3f(0, -player.getDefaultSpeed(), 0));
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage( player.backward1 );
 			} else {
 				player.setCurrentImage( player.backward2 );
 			}
 		}
+
+		player.setIsInCollision( false );
+		player.setCurrentSpeed( player.getDefaultSpeed() ) ;
 	}
 
 	private void detectCollision( int direction, GameObject gameObject ) {

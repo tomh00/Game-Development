@@ -60,9 +60,9 @@ public class MainWindow {
 //			@Override
 //			public void actionPerformed(ActionEvent e) {
 //				startMenuButton.setVisible(false);
-//				BackgroundImageForStartMenu.setVisible(false);
+//				BackgroundImageForStaartMenu.setVisible(false);
 				canvas.setVisible(true);
-				//canvas.addKeyListener(Controller);    //adding the controller to the Canvas
+				canvas.addKeyListener(Controller);    //adding the controller to the Canvas
 				canvas.setFocusable(true);   // making sure that the Canvas is in focus so keyboard input will be taking in .
 //				startGame=true;
 //				}

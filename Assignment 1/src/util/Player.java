@@ -24,6 +24,7 @@ public class Player extends GameObject{
         this.setHeight(height);
         this.setCentre(centre);
         this.setDefaultSpeed(speed);
+        setCurrentSpeed( this.getDefaultSpeed() );
         this.setCollisionArea( rectangle );
     }
 }
