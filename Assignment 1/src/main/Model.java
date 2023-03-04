@@ -6,7 +6,10 @@ import util.Point3f;
 import util.Vector3f;
 import util.worldmap.WorldMap;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /*
@@ -38,7 +41,7 @@ public class Model {
 	 private Player player;
 	 private WorldMap worldMap;
 	 private Controller controller = Controller.getInstance();
-	 private CopyOnWriteArrayList<GameObject> redBulls = new CopyOnWriteArrayList<GameObject>();
+	 private CopyOnWriteArrayList< GameObject > redBulls = new CopyOnWriteArrayList<>();
 	 //private  CopyOnWriteArrayList<GameObject> BulletList  = new CopyOnWriteArrayList<GameObject>();
 	 //private int Score=0;
 
@@ -71,15 +74,19 @@ public class Model {
 		worldMap = new WorldMap( this );
 		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));wwwdasddddwdas
 		//Enemies  starting with four 
-		
-		redBulls.add( new GameObject( "res/UFO.png", scaledTileSize, scaledTileSize,
-				new Point3f( ( ( float ) Math.random() * 50 + 500 ), 0, 0 ),
-				2, new Rectangle( 0, 0, scaledTileSize, scaledTileSize ) ) );
+
+		try {
+			redBulls.add( new GameObject( ImageIO.read( getClass().getResourceAsStream( "/redbull.png" ) ),
+					scaledTileSize, scaledTileSize,
+					new Point3f(((float) Math.random() * 50 + 500), 0, 0),
+					2, new Rectangle(0, 0, scaledTileSize, scaledTileSize)));
+		} catch ( IOException e ) {
+			e.printStackTrace();
+		}
 		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*50+500 ),0,0)));
 		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+500 ),0,0)));
 		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+400 ),0,0)));
 
-		int x = 1 + 2;
 	    
 	}
 	
@@ -149,11 +156,15 @@ public class Model {
 		
 		if ( redBulls.size()<1 )
 		{
-			while ( redBulls.size()<1 )
-			{
-				redBulls.add( new GameObject( "res/UFO.png", scaledTileSize, scaledTileSize,
-						new Point3f( ( ( float ) Math.random() * 1000 ), 0, 0 ),
-						2, new Rectangle( 0, 0, scaledTileSize, scaledTileSize ) ) );
+			while ( redBulls.size()<1 ) {
+				try {
+					redBulls.add(new GameObject(ImageIO.read(getClass().getResourceAsStream("/redbull.png")),
+							scaledTileSize, scaledTileSize,
+							new Point3f(((float) Math.random() * 1000), 0, 0),
+							2, new Rectangle(0, 0, scaledTileSize, scaledTileSize)));
+				} catch ( IOException e ) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

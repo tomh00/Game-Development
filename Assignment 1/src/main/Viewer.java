@@ -1,8 +1,10 @@
 package main;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -120,24 +122,18 @@ public class Viewer extends JPanel {
 		//Draw Enemies
 		gameworld.getRedBulls().forEach( ( temp ) ->
 				drawRedBulls( ( int ) temp.getCentre().getX(), ( int ) temp.getCentre().getY(), ( int ) temp.getWidth(),
-						( int ) temp.getHeight(), temp.getTexture(), g ));
+						( int ) temp.getHeight(), temp.getCurrentImage(), g ));
 	}
 
-	private void drawRedBulls(int x, int y, int width, int height, String texture, Graphics g) {
+	private void drawRedBulls(int x, int y, int width, int height, BufferedImage image, Graphics g) {
 		int redBullScreenPosX = x - ( int ) gameworld.getPlayer().getCentre().getX() + gameworld.getScreenWidth() / 2;
 		int redBullScreenPosY = y - ( int ) gameworld.getPlayer().getCentre().getY() + gameworld.getScreenHeight() / 2;
-		File TextureToLoad = new File(texture);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE
-		try {
-			Image myImage = ImageIO.read(TextureToLoad);
-			//The spirte is 32x32 pixel wide and 4 of them are placed together so we need to grab a different one each time
-			//remember your training :-) computer science everything starts at 0 so 32 pixels gets us to 31
-			int currentPositionInAnimation= ((int) (CurrentAnimationTime%4 )*32); //slows down animation so every 10 frames we get another frame so every 100ms
-			g.drawImage( myImage, redBullScreenPosX, redBullScreenPosY, redBullScreenPosX+width, redBullScreenPosY+height, null );
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//File TextureToLoad = new File(image);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE
+		//Image myImage = ImageIO.read(TextureToLoad);
+		//The spirte is 32x32 pixel wide and 4 of them are placed together so we need to grab a different one each time
+		//remember your training :-) computer science everything starts at 0 so 32 pixels gets us to 31
+		int currentPositionInAnimation= ((int) (CurrentAnimationTime%4 )*32); //slows down animation so every 10 frames we get another frame so every 100ms
+		g.drawImage( image, redBullScreenPosX, redBullScreenPosY, gameworld.getScaledTileSize(), gameworld.getScaledTileSize(), null );
 
 	}
 
