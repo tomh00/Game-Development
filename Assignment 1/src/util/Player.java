@@ -5,6 +5,7 @@ import java.awt.*;
 import java.io.IOException;
 
 public class Player extends GameObject{
+    private boolean boosted = false;
 
     public Player(int width, int height, Point3f centre, int speed, Rectangle rectangle){
         try {
@@ -27,4 +28,7 @@ public class Player extends GameObject{
         setCurrentSpeed( this.getDefaultSpeed() );
         this.setCollisionArea( rectangle );
     }
+
+    public void setBoosted( boolean boosted ) { this.boosted = boosted; }
+    public boolean isBoosted() { return boosted; }
 }

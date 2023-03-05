@@ -8,7 +8,6 @@ import util.worldmap.WorldMap;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -62,6 +61,8 @@ public class Model {
 	private final int maxWorldRows = 84;
 	private final int worldWidth = scaledTileSize * maxWorldColumns;
 	private final int worldHeight = scaledTileSize * maxWorldRows;
+
+	private int frameNum =0;
 
 	public Model() {
 		//setup game world
@@ -165,8 +166,8 @@ public class Model {
 		for ( GameObject redbull : redBulls ) {
 			if ( Math.abs(redbull.getCentre().getX()- player.getCentre().getX())< redbull.getWidth()
 					&& Math.abs(redbull.getCentre().getY()- player.getCentre().getY()) < redbull.getHeight()) {
-				System.out.println( true );
 				redBulls.remove( redbull );
+				player.setBoosted( true );
 			}
 		}
 	}
@@ -201,13 +202,16 @@ public class Model {
 		player.animateSprite();
 
 		if (Controller.getInstance().isKeyAPressed()) {
-			detectCollision( 0, player );
-			if (  player.isInCollision() ) {
-				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
+			detectCollision(0, player);
+			if (player.isInCollision()) {
+				player.setCurrentSpeed(player.getDefaultSpeed() - 1);
+			}
+			if (player.isBoosted()) {
+				player.setCurrentSpeed(player.getCurrentSpeed() + 1);
 			}
 			player.getCentre().ApplyVector(
 					new Vector3f(-player.getCurrentSpeed(), 0, 0));
-			player.setIsInCollision( false );
+			player.setIsInCollision(false);
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.left1);
 			} else {
@@ -216,9 +220,9 @@ public class Model {
 		}
 
 		if (Controller.getInstance().isKeyDPressed()) {
-			detectCollision( 1, player );
-			if ( player.isInCollision() ) {
-				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
+			detectCollision(1, player);
+			if (player.isInCollision()) {
+				player.setCurrentSpeed(player.getDefaultSpeed() - 1);
 			}
 			player.getCentre().ApplyVector(new Vector3f(player.getCurrentSpeed(), 0, 0));
 			if (player.getSpritePosition() == 0) {
@@ -229,10 +233,14 @@ public class Model {
 		}
 
 		if (Controller.getInstance().isKeyWPressed()) {
-			detectCollision( 2, player );
-			if ( player.isInCollision() ) {
-				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
+			detectCollision(2, player);
+			if (player.isInCollision()) {
+				player.setCurrentSpeed(player.getDefaultSpeed() - 1);
 			}
+			if ( player.isBoosted() ) {
+				player.setCurrentSpeed(player.getCurrentSpeed() + 1);
+			}
+			System.out.println(player.getCurrentSpeed());
 			player.getCentre().ApplyVector(new Vector3f(0, player.getCurrentSpeed(), 0));
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.forward1);
@@ -242,20 +250,31 @@ public class Model {
 		}
 
 		if (Controller.getInstance().isKeySPressed()) {
-			detectCollision( 3, player );
-			if ( player.isInCollision() ){
-				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
+			detectCollision(3, player);
+			if (player.isInCollision()) {
+				player.setCurrentSpeed(player.getDefaultSpeed() - 1);
 			}
 			player.getCentre().ApplyVector(new Vector3f(0, -player.getCurrentSpeed(), 0));
 			if (player.getSpritePosition() == 0) {
-				player.setCurrentImage( player.backward1 );
+				player.setCurrentImage(player.backward1);
 			} else {
-				player.setCurrentImage( player.backward2 );
+				player.setCurrentImage(player.backward2);
 			}
 		}
 
 		player.setIsInCollision( false );
-		player.setCurrentSpeed( player.getDefaultSpeed() ) ;
+		if ( player.isBoosted() ) {
+			if ( frameNum == 30 ) {
+				player.setCurrentSpeed( player.getDefaultSpeed() );
+				player.setBoosted( false );
+				frameNum = 0;
+			} else {
+				frameNum++;
+			}
+		}
+		else {
+			player.setCurrentSpeed( player.getDefaultSpeed() );
+		}
 	}
 
 	private void detectCollision( int direction, GameObject gameObject ) {
