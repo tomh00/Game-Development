@@ -75,10 +75,12 @@ public class Model {
 
 		try {
 			for ( int i = 0; i < maxWorldRows / 20; i++ ) {
+				float randX = (float) Math.random( ) * maxWorldColumns * scaledTileSize;
+				float randY = (float) Math.random( ) * maxWorldRows * scaledTileSize;
 				redBulls.add( new GameObject( ImageIO.read( getClass().getResourceAsStream( "/redbull.png" ) ),
 						scaledTileSize, scaledTileSize,
-						new Point3f( ( (float) Math.random( ) * maxWorldColumns * scaledTileSize ), ( ( float ) Math.random() * maxWorldRows * scaledTileSize ), 0),
-						2, new Rectangle( 0, 0, scaledTileSize, scaledTileSize ) ) );
+						new Point3f( randX, randY, 0),
+						2, new Rectangle( ( int ) randX + 0, ( int ) randY + 0, scaledTileSize, scaledTileSize ) ) );
 			}
 		} catch ( IOException e ) {
 			e.printStackTrace();
@@ -160,10 +162,10 @@ public class Model {
 			}
 		}*/
 
-		// if player x == redbull x and player y == redbull y they have collided#
 		for ( GameObject redbull : redBulls ) {
-			if ( redbull.getCentre().getX() + ( redbull.getCollisionArea().x ) - ( player.getCentre().getX() + player.getCollisionArea().x ) < 10 &&
-				redbull.getCentre().getY() + ( redbull.getCollisionArea().y ) - ( player.getCentre().getX() + player.getCollisionArea().y ) < 10 ) {
+			if ( Math.abs(redbull.getCentre().getX()- player.getCentre().getX())< redbull.getWidth()
+					&& Math.abs(redbull.getCentre().getY()- player.getCentre().getY()) < redbull.getHeight()) {
+				System.out.println( true );
 				redBulls.remove( redbull );
 			}
 		}
