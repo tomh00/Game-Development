@@ -58,7 +58,7 @@ public class Model {
 	private final int screenWidth = scaledTileSize * maxScreenColumns;
 
 	// World map is larger than the screen so has seperate boundaries
-	private final int maxWorldColumns = 27;
+	private final int maxWorldColumns = 22;
 	private final int maxWorldRows = 84;
 	private final int worldWidth = scaledTileSize * maxWorldColumns;
 	private final int worldHeight = scaledTileSize * maxWorldRows;
@@ -72,14 +72,14 @@ public class Model {
 				new Rectangle( 8, 16, 32, 32 ) );
 
 		worldMap = new WorldMap( this );
-		//background = new GameObject("res/spacebackground.png", 600, 700, new Point3f(0,0,0));wwwdasddddwdas
-		//Enemies  starting with four 
 
 		try {
-			redBulls.add( new GameObject( ImageIO.read( getClass().getResourceAsStream( "/redbull.png" ) ),
-					scaledTileSize, scaledTileSize,
-					new Point3f(((float) Math.random() * 50 + 500), 0, 0),
-					2, new Rectangle(0, 0, scaledTileSize, scaledTileSize)));
+			for ( int i = 0; i < maxWorldRows / 20; i++ ) {
+				redBulls.add( new GameObject( ImageIO.read( getClass().getResourceAsStream( "/redbull.png" ) ),
+						scaledTileSize, scaledTileSize,
+						new Point3f( ( (float) Math.random( ) * maxWorldColumns * scaledTileSize ), ( ( float ) Math.random() * maxWorldRows * scaledTileSize ), 0),
+						2, new Rectangle( 0, 0, scaledTileSize, scaledTileSize ) ) );
+			}
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
@@ -138,33 +138,33 @@ public class Model {
 
 	private void redBullLogic() {
 		// TODO Auto-generated method stub
-		for (GameObject temp : redBulls)
-		{
-		    // Move enemies 
-			  
-			//temp.getCentre().ApplyVector( new Vector3f(0,-temp.getDefaultSpeed(),0) );
-			 
-			 
-			//see if they get to the top of the screen ( remember 0 is the top 
-			if ( temp.getCentre().getY()==900.0f )  // current boundary need to pass value to model
-			{
-				redBulls.remove( temp );
-				// enemies win so score decreased 
-				//Score--;
-			} 
-		}
+		// Move enemies
+		//temp.getCentre().ApplyVector( new Vector3f(0,-temp.getDefaultSpeed(),0) );
+		//see if they get to the top of the screen ( remember 0 is the top
+		// current boundary need to pass value to model
+		// enemies win so score decreased
+		//Score--;
+		//redBulls.removeIf(temp -> temp.getCentre().getY() == 900.0f);
 		
-		if ( redBulls.size()<1 )
+		/*if ( redBulls.size()<1 )
 		{
 			while ( redBulls.size()<1 ) {
 				try {
-					redBulls.add(new GameObject(ImageIO.read(getClass().getResourceAsStream("/redbull.png")),
+					redBulls.add( new GameObject(ImageIO.read(getClass().getResourceAsStream("/redbull.png" ) ),
 							scaledTileSize, scaledTileSize,
 							new Point3f(((float) Math.random() * 1000), 0, 0),
 							2, new Rectangle(0, 0, scaledTileSize, scaledTileSize)));
 				} catch ( IOException e ) {
 					e.printStackTrace();
 				}
+			}
+		}*/
+
+		// if player x == redbull x and player y == redbull y they have collided#
+		for ( GameObject redbull : redBulls ) {
+			if ( redbull.getCentre().getX() + ( redbull.getCollisionArea().x ) - ( player.getCentre().getX() + player.getCollisionArea().x ) < 10 &&
+				redbull.getCentre().getY() + ( redbull.getCollisionArea().y ) - ( player.getCentre().getX() + player.getCollisionArea().y ) < 10 ) {
+				redBulls.remove( redbull );
 			}
 		}
 	}
@@ -244,7 +244,7 @@ public class Model {
 			if ( player.isInCollision() ){
 				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
 			}
-			player.getCentre().ApplyVector(new Vector3f(0, -player.getDefaultSpeed(), 0));
+			player.getCentre().ApplyVector(new Vector3f(0, -player.getCurrentSpeed(), 0));
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage( player.backward1 );
 			} else {
