@@ -27,7 +27,7 @@ public class WorldMap {
             Tile grassTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/grass.png" ) ), true );
             Tile pathTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/path.png" ) ), false );
             Tile roadLineTile = new Tile ( ImageIO.read( getClass().getResourceAsStream( "/background/road-line.png" ) ), false );
-            tiles = new Tile[4];
+            tiles = new Tile[10];
             tiles[ 0 ] = grassTile;
             tiles[ 1 ] = pathTile;
             tiles[ 2 ] = roadTile;

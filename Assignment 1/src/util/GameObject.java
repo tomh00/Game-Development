@@ -47,7 +47,7 @@ public class GameObject {
 
 	private boolean isInCollision;
 	
-    public GameObject(BufferedImage currentImage,int width,int height,Point3f centre, int speed, Rectangle rectangle) {
+    public GameObject( BufferedImage currentImage, int width, int height, Point3f centre, int speed, Rectangle rectangle ) {
 		 hasTextured=true;
 
 		 this.currentImage = currentImage;

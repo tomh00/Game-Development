@@ -123,6 +123,16 @@ public class Viewer extends JPanel {
 		gameworld.getRedBulls().forEach( ( temp ) ->
 				drawRedBulls( ( int ) temp.getCentre().getX(), ( int ) temp.getCentre().getY(), ( int ) temp.getWidth(),
 						( int ) temp.getHeight(), temp.getCurrentImage(), g ));
+		gameworld.getCarList().forEach( ( temp ) ->
+				drawCars ( g, temp.getCurrentImage(), ( int ) temp.getCentre().getX(), ( int ) temp.getCentre().getY(),
+						temp.getWidth(), temp.getHeight() ) );
+		gameworld.ui.draw( g );
+	}
+
+	private void drawCars( Graphics g, BufferedImage car, int x, int y, int width, int height ) {
+		int screenPosX = x - ( int ) gameworld.getPlayer().getCentre().getX() + gameworld.getScreenWidth() / 2;
+		int screenPosY = y - ( int ) gameworld.getPlayer().getCentre().getY() + gameworld.getScreenHeight() / 2;
+		g.drawImage( car, screenPosX, screenPosY, width, height, null );
 	}
 
 	private void drawRedBulls(int x, int y, int width, int height, BufferedImage image, Graphics g) {
@@ -157,38 +167,30 @@ public class Viewer extends JPanel {
 							tileScreenPosX, tileScreenPosY,
 							gameworld.getScaledTileSize(), gameworld.getScaledTileSize(),
 							null);
+
 				}
 			}
 		}
+		try {
+			drawBuilding ( g,
+					ImageIO.read( getClass().getResourceAsStream( "/school/left-side-school.png" ) ),
+					ImageIO.read( getClass().getResourceAsStream( "/school/centre-school.png" ) ),
+					ImageIO.read( getClass().getResourceAsStream( "/school/right-side-school.png" ) ),
+					500, gameworld.getMaxWorldRows() * gameworld.getScaledTileSize() );
+		} catch ( IOException e ) {
+			e.printStackTrace();
+		}
 	}
-////	private void drawBackground(Graphics g)
-////	{
-////		File TextureToLoad = new File("res/Game background.jpg");  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE
-////		try {
-////			Image myImage = ImageIO.read(TextureToLoad);
-////			 g.drawImage(myImage, 0,0, 2500, 3500, 0 , 0, 1000, 1000, null);
-////
-////		} catch (IOException e) {
-////			// TODO Auto-generated catch block
-////			e.printStackTrace();
-////		}
-////	}
-//
-//	private void drawBullet(int x, int y, int width, int height, String texture,Graphics g)
-//	{
-//		File TextureToLoad = new File(texture);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE
-//		try {
-//			Image myImage = ImageIO.read(TextureToLoad);
-//			//64 by 128
-//			 g.drawImage(myImage, x,y, x+width, y+height, 0 , 0, 63, 127, null);
-//
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-//
-//
+
+	private void drawBuilding ( Graphics g, BufferedImage buildingLeft, BufferedImage buildingCentre, BufferedImage buildingRight, int worldX, int worldY ) {
+		int screenPosX = worldX - ( int ) gameworld.getPlayer().getCentre().getX() + gameworld.getScreenWidth() / 2;
+		int screenPosY = worldY - ( int ) gameworld.getPlayer().getCentre().getY() + gameworld.getScreenHeight() / 2;
+
+		g.drawImage( buildingLeft, screenPosX - 145, screenPosY, 144, 144, null );
+		g.drawImage( buildingCentre, screenPosX, screenPosY, 144, 144, null );
+		g.drawImage( buildingRight, screenPosX + 145, screenPosY, 144, 144, null );
+	}
+
 	private void drawPlayer( Graphics g ) {
 		g.drawImage( gameworld.getPlayer().getCurrentImage(),
 				gameworld.getScreenWidth() / 2,

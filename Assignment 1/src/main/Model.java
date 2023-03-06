@@ -40,11 +40,12 @@ public class Model {
 	 private Player player;
 	 private WorldMap worldMap;
 	 private Controller controller = Controller.getInstance();
+	 public UI ui;
 	 private CopyOnWriteArrayList< GameObject > redBulls = new CopyOnWriteArrayList<>();
-	 //private  CopyOnWriteArrayList<GameObject> BulletList  = new CopyOnWriteArrayList<GameObject>();
-	 //private int Score=0;
+	 private  CopyOnWriteArrayList<GameObject> carList  = new CopyOnWriteArrayList<>();
+	 private int playerlives  = 5;
 
-	// project uses tiles for sprites and the game world
+	// project uses tiles for the main game world
 	// using 16x16 tiles and scaling them up 3 times
 	private final int tileSize = 16;
 	private final int scale = 3;
@@ -58,22 +59,24 @@ public class Model {
 
 	// World map is larger than the screen so has seperate boundaries
 	private final int maxWorldColumns = 22;
-	private final int maxWorldRows = 84;
+	private final int maxWorldRows = 80;
 	private final int worldWidth = scaledTileSize * maxWorldColumns;
 	private final int worldHeight = scaledTileSize * maxWorldRows;
 
-	private int frameNum =0;
+	private int frameNum = 0;
 
 	public Model() {
 		//setup game world
 		//Player
 		player = new Player( 50, 50,
-				new Point3f( scaledTileSize * 12, scaledTileSize * 82,0 ),
+				new Point3f( scaledTileSize * 12, scaledTileSize * 78,0 ),
 				2 ,
 				new Rectangle( 8, 16, 32, 32 ) );
 
 		worldMap = new WorldMap( this );
 
+		// creating static red bull cans to speed player up
+		// and cars to avoid
 		try {
 			for ( int i = 0; i < maxWorldRows / 20; i++ ) {
 				float randX = (float) Math.random( ) * maxWorldColumns * scaledTileSize;
@@ -81,15 +84,24 @@ public class Model {
 				redBulls.add( new GameObject( ImageIO.read( getClass().getResourceAsStream( "/redbull.png" ) ),
 						scaledTileSize, scaledTileSize,
 						new Point3f( randX, randY, 0),
-						2, new Rectangle( ( int ) randX + 0, ( int ) randY + 0, scaledTileSize, scaledTileSize ) ) );
+						2, new Rectangle( ( int ) randX, ( int ) randY, scaledTileSize, scaledTileSize ) ) );
 			}
+
+			float randX = (float) Math.random( ) * maxWorldColumns * scaledTileSize;
+			float randY = (float) Math.random( ) * maxWorldRows * scaledTileSize;
+			carList.add(
+					new GameObject( ImageIO.read( getClass().getResourceAsStream( "/cars/blue-car.png" ) ),
+					100, 100,
+					new Point3f( randX, randY, 0 ),
+					2, new Rectangle( ( int ) randX + 8, ( int ) randY + 16, 84, 68) ) );
+			int x = 1+ 2;
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
 		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*50+500 ),0,0)));
 		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+500 ),0,0)));
 		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+400 ),0,0)));
-
+		ui = new UI( this );
 	    
 	}
 	
@@ -100,6 +112,7 @@ public class Model {
 		playerLogic();
 		// Enemy Logic next
 		redBullLogic();
+		carLogic();
 		// Bullets move next 
 		//bulletLogic();
 		// interactions between objects 
@@ -139,35 +152,48 @@ public class Model {
 		
 	}
 
-	private void redBullLogic() {
-		// TODO Auto-generated method stub
-		// Move enemies
-		//temp.getCentre().ApplyVector( new Vector3f(0,-temp.getDefaultSpeed(),0) );
-		//see if they get to the top of the screen ( remember 0 is the top
-		// current boundary need to pass value to model
-		// enemies win so score decreased
-		//Score--;
-		//redBulls.removeIf(temp -> temp.getCentre().getY() == 900.0f);
-		
-		/*if ( redBulls.size()<1 )
-		{
-			while ( redBulls.size()<1 ) {
-				try {
-					redBulls.add( new GameObject(ImageIO.read(getClass().getResourceAsStream("/redbull.png" ) ),
-							scaledTileSize, scaledTileSize,
-							new Point3f(((float) Math.random() * 1000), 0, 0),
-							2, new Rectangle(0, 0, scaledTileSize, scaledTileSize)));
-				} catch ( IOException e ) {
-					e.printStackTrace();
-				}
-			}
-		}*/
+	private void carLogic() {
+	// if the there are no cars currently then add one in the distance
+	// use the y coordinate to pick how far away it will be
+		if ( carList.isEmpty() ) {
+			try {
+				float randX = (float) Math.random() * maxWorldColumns * scaledTileSize;
+				float randY = (float) Math.random() * maxWorldRows * scaledTileSize;
+				carList.add(
+						new GameObject(ImageIO.read(getClass().getResourceAsStream("/cars/red-car.png")),
+								100, 100,
+								new Point3f(randX, player.getCentre().getY() - ( screenHeight / 2 ) - 750, 0),
+								2, new Rectangle((int) randX + 8, (int) randY + 16, 84, 68)));
 
+			} catch ( IOException e ) {
+				e.printStackTrace();
+			}
+		}
+		for ( GameObject car : carList ){
+			// move car down the screen
+			car.getCentre().ApplyVector( new Vector3f( 0, -car.getDefaultSpeed(), 0 ) );
+			if ( car.getCentre().getY() > player.getCentre().getY() + screenHeight / 2 ) {
+				carList.remove( car );
+			}
+
+			// check for collision
+			// if collision subtract player life
+			if ( Math.abs(car.getCentre().getX()- player.getCentre().getX())< car.getWidth()
+					&& Math.abs(car.getCentre().getY()- player.getCentre().getY()) < car.getHeight()) {
+				playerlives--;
+				carList.remove( car );
+				System.out.println(playerlives);
+			}
+		}
+	}
+
+	private void redBullLogic() {
 		for ( GameObject redbull : redBulls ) {
 			if ( Math.abs(redbull.getCentre().getX()- player.getCentre().getX())< redbull.getWidth()
 					&& Math.abs(redbull.getCentre().getY()- player.getCentre().getY()) < redbull.getHeight()) {
 				redBulls.remove( redbull );
 				player.setBoosted( true );
+				ui.showMessage( "BOOST ACQUIRED!" );
 			}
 		}
 	}
@@ -195,6 +221,8 @@ public class Model {
 		} 
 		
 	}*/
+
+
 
 	private void playerLogic() {
 
@@ -240,7 +268,7 @@ public class Model {
 			if ( player.isBoosted() ) {
 				player.setCurrentSpeed(player.getCurrentSpeed() + 1);
 			}
-			System.out.println(player.getCurrentSpeed());
+
 			player.getCentre().ApplyVector(new Vector3f(0, player.getCurrentSpeed(), 0));
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.forward1);
@@ -250,6 +278,8 @@ public class Model {
 		}
 
 		if (Controller.getInstance().isKeySPressed()) {
+			ui.completed = true;
+			this.controller = null;
 			detectCollision(3, player);
 			if (player.isInCollision()) {
 				player.setCurrentSpeed(player.getDefaultSpeed() - 1);
@@ -267,6 +297,7 @@ public class Model {
 			if ( frameNum == 30 ) {
 				player.setCurrentSpeed( player.getDefaultSpeed() );
 				player.setBoosted( false );
+				ui.messageInDisplay = false;
 				frameNum = 0;
 			} else {
 				frameNum++;
@@ -356,6 +387,9 @@ public class Model {
 	public int getWorldHeight() { return worldHeight; }
 	public int getWorldWidth() { return worldWidth; }
 	public CopyOnWriteArrayList<GameObject> getRedBulls() { return redBulls; }
+
+	public CopyOnWriteArrayList<GameObject> getCarList() { return carList; }
+	public int getPlayerlives () { return playerlives; }
 	/*public CopyOnWriteArrayList<GameObject> getBullets() {
 		return BulletList;
 	}
