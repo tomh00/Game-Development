@@ -61,12 +61,14 @@ public class Model {
 
 	// World map is larger than the screen so has seperate boundaries
 	private final int maxWorldColumns = 98;
-	private final int maxWorldRows = 176;
+	private final int maxWorldRows = 173;
 	private final int worldWidth = scaledTileSize * maxWorldColumns;
 	private final int worldHeight = scaledTileSize * maxWorldRows;
 
 	private boolean gameCompleted = false;
 	private int frameNum = 0;
+	private int carNum = 0;
+	private String[] carTypes;
 
 	public Model() {
 		//setup game world
@@ -79,33 +81,19 @@ public class Model {
 		worldMap = new WorldMap( this );
 
 		// creating static red bull cans to speed player up
-		// and cars to avoid
-		try {
-			for ( int i = 0; i < maxWorldRows / 20; i++ ) {
-				float randX = (float) Math.random( ) * maxWorldColumns * scaledTileSize;
-				float randY = (float) Math.random( ) * maxWorldRows * scaledTileSize;
-				redBulls.add( new GameObject( ImageIO.read( getClass().getResourceAsStream( "/redbull.png" ) ),
-						scaledTileSize, scaledTileSize,
-						new Point3f( randX, randY, 0),
-						2, new Rectangle( ( int ) randX, ( int ) randY, scaledTileSize, scaledTileSize ) ) );
-			}
-
-			/*float randX = (float) Math.random( ) * maxWorldColumns * scaledTileSize;
-			float randY = (float) Math.random( ) * maxWorldRows * scaledTileSize;
-			carList.add(
-					new GameObject( ImageIO.read( getClass().getResourceAsStream( "/cars/blue-car.png" ) ),
-					100, 100,
-					new Point3f( randX, randY, 0 ),
-					2, new Rectangle( ( int ) randX + 8, ( int ) randY + 16, 84, 68) ) );*/
-		} catch ( IOException e ) {
-			e.printStackTrace();
-		}
+		createRedBulls();
 
 		// make shop game object for ending game
 		shop = new GameObject( );
 		shop.setCentre( new Point3f( 82 * scaledTileSize, 4 * scaledTileSize, 0 ) );
 		shop.setWidth( 288 );
 		shop.setHeight( 288 );
+
+		carTypes = new String[ 4 ];
+		carTypes[ 0 ] = "/cars/blue-car.png";
+		carTypes[ 1 ] = "/cars/green-car.png";
+		carTypes[ 2 ] = "/cars/red-car.png";
+		carTypes[ 3 ] = "/cars/yellow-car.png";
 
 		ui = new UI( this );
 	    
@@ -182,7 +170,7 @@ public class Model {
 			}
 		}
 
-		else if ( player.getCentre().getY() <= 97 * scaledTileSize ) {
+		else if ( player.getCentre().getY() <= 92 * scaledTileSize ) {
 			if ( carList.isEmpty() ) {
 				addCar( 0, 9, 18 );
 			}
@@ -225,8 +213,8 @@ public class Model {
 				// check for collision
 				// if collision subtract player life
 		for (GameObject car : carList) {
-			if (Math.abs(car.getCentre().getX() - player.getCentre().getX()) < car.getWidth()
-					&& Math.abs(car.getCentre().getY() - player.getCentre().getY()) < car.getHeight()) {
+			if (Math.abs( ( car.getCentre().getX() + car.getCollisionArea().x ) -  player.getCentre().getX() ) < car.getCollisionArea().width
+					&& Math.abs( ( car.getCentre().getY() + car.getCollisionArea().y ) - player.getCentre().getY() ) < car.getCollisionArea().height ) {
 				playerlives--;
 				carList.remove(car);
 
@@ -244,10 +232,10 @@ public class Model {
 				float randX = (float) Math.random() * ( ( max * scaledTileSize ) - ( min * scaledTileSize ) ) + ( min * scaledTileSize );
 				try {
 					carList.add(
-							new GameObject( ImageIO.read ( getClass().getResourceAsStream( "/cars/red-car.png" ) ),
+							new GameObject( ImageIO.read ( getClass().getResourceAsStream( carTypes[ carNum ] ) ),
 									100, 100,
 									new Point3f( randX, player.getCentre().getY() - (screenHeight / 2) - 750, 0 ),
-									2, new Rectangle(0, 0, 0, 0 ) ) );
+									2, new Rectangle(8, 16, 32, 32 ) ) );
 				} catch ( IOException e ) {
 					e.printStackTrace();
 				}
@@ -256,10 +244,10 @@ public class Model {
 				float randY1 = (float) Math.random() * ((max * scaledTileSize) - (min * scaledTileSize)) + (min * scaledTileSize);
 				try {
 					carList.add(
-							new GameObject(ImageIO.read(getClass().getResourceAsStream("/cars/red-car.png")),
+							new GameObject(ImageIO.read(getClass().getResourceAsStream(carTypes[ carNum ] ) ),
 									100, 100,
 									new Point3f(player.getCentre().getX() - (screenWidth / 2) - 750, randY1, 0),
-									2, new Rectangle(0, 0, 0, 0)));
+									2, new Rectangle( 8, 16, 32, 32 ) ) );
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -268,15 +256,18 @@ public class Model {
 				float randY2 = ( float ) Math.random() * ( ( max * scaledTileSize ) - ( min * scaledTileSize ) ) + ( min * scaledTileSize );
 				try {
 					carList.add(
-							new GameObject(ImageIO.read( getClass().getResourceAsStream( "/cars/red-car.png" ) ),
+							new GameObject(ImageIO.read( getClass().getResourceAsStream( carTypes[ carNum ] ) ),
 									100, 100,
 									new Point3f(player.getCentre().getX() + ( screenWidth / 2 ) + 750, randY2, 0),
-									2, new Rectangle(0, 0, 0, 0)));
+									2, new Rectangle( 8, 16, 32, 32 ) ) );
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				break;
 		}
+
+		// adjust carNum to use different colour cars
+		if ( carNum < 3 ) { carNum ++; } else { carNum = 0; }
 	}
 
 	private void redBullLogic() {
@@ -290,6 +281,54 @@ public class Model {
 		}
 	}
 
+	private void createRedBulls () {
+		float randX;
+		float randY;
+
+		try {
+			// 2 red bulls per section of course
+			for ( int i = 0; i < 2; i++ ) {
+				randX = ( float ) Math.random() * ( ( 89 * scaledTileSize ) -  ( 78 * scaledTileSize ) ) + ( 78 * scaledTileSize );
+				randY = ( float ) Math.random() * ( ( 170 * scaledTileSize ) - ( 106 * scaledTileSize ) ) + ( 106 * scaledTileSize );
+				redBulls.add(new GameObject(ImageIO.read(getClass().getResourceAsStream("/redbull.png")),
+						scaledTileSize, scaledTileSize,
+						new Point3f(randX,
+								randY,
+								0), 2, new Rectangle((int) randX, (int) randY, scaledTileSize, scaledTileSize)));
+			}
+
+			for ( int i = 0; i < 2; i++ ) {
+				randX = ( float ) Math.random() * ( ( 89 * scaledTileSize ) - ( 8 * scaledTileSize ) ) + ( 8 * scaledTileSize );
+				randY = ( float ) Math.random() * ( ( 104 * scaledTileSize ) - ( 98 * scaledTileSize ) ) + ( 98 * scaledTileSize );
+				redBulls.add(new GameObject(ImageIO.read(getClass().getResourceAsStream("/redbull.png")),
+						scaledTileSize, scaledTileSize,
+						new Point3f(randX,
+								randY,
+								0), 2, new Rectangle((int) randX, (int) randY, scaledTileSize, scaledTileSize)));
+			}
+
+			for ( int i = 0; i < 2; i++ ) {
+				randX = ( float ) Math.random() * ( ( 18 * scaledTileSize ) - ( 9 * scaledTileSize ) ) + ( 9 * scaledTileSize );
+				randY = ( float ) Math.random() * ( ( 97 * scaledTileSize ) - ( 26 * scaledTileSize ) ) + ( 26 * scaledTileSize );
+				redBulls.add(new GameObject(ImageIO.read(getClass().getResourceAsStream("/redbull.png")),
+						scaledTileSize, scaledTileSize,
+						new Point3f(randX,
+								randY,
+								0), 2, new Rectangle((int) randX, (int) randY, scaledTileSize, scaledTileSize)));
+			}
+			for ( int i = 0; i < 2; i++ ) {
+				randX = ( float ) Math.random() * ( ( 88 * scaledTileSize ) - ( 9 * scaledTileSize ) ) + ( 9 * scaledTileSize );
+				randY = ( float ) Math.random() * ( ( 24 * scaledTileSize ) - ( 15 * scaledTileSize ) ) + ( 15 * scaledTileSize );
+				redBulls.add(new GameObject(ImageIO.read(getClass().getResourceAsStream("/redbull.png")),
+						scaledTileSize, scaledTileSize,
+						new Point3f(randX,
+								randY,
+								0), 2, new Rectangle((int) randX, (int) randY, scaledTileSize, scaledTileSize)));
+			}
+		} catch ( IOException e ) {
+			e.printStackTrace();
+		}
+	}
 	private void detectObjectCollision() {
 		//TODO
 	}
@@ -317,8 +356,6 @@ public class Model {
 
 
 	private void playerLogic() {
-
-		// smoother animation is possible if we make a target position  // done but may try to change things for students  
 		player.animateSprite();
 
 		if (Controller.getInstance().isKeyAPressed()) {
@@ -340,11 +377,15 @@ public class Model {
 		}
 
 		if (Controller.getInstance().isKeyDPressed()) {
-			detectCollision(1, player);
-			if (player.isInCollision()) {
-				player.setCurrentSpeed(player.getDefaultSpeed() - 1);
+			detectCollision( 1, player );
+			if ( player.isInCollision() ) {
+				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
+			}
+			if ( player.isBoosted() ) {
+				player.setCurrentSpeed( ( player.getCurrentSpeed() + 1 ) );
 			}
 			player.getCentre().ApplyVector(new Vector3f(player.getCurrentSpeed(), 0, 0));
+			player.setIsInCollision( false );
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.right1);
 			} else {
