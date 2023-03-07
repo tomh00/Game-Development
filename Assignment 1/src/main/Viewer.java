@@ -98,27 +98,6 @@ public class Viewer extends JPanel {
 
 		CurrentAnimationTime++; // runs animation time step
 
-
-		//Draw player Game Object
-//		int x = (int) gameworld.getPlayer().getCentre().getX();
-//		int y = (int) gameworld.getPlayer().getCentre().getY();
-//		int width = (int) gameworld.getPlayer().getWidth();
-//		int height = (int) gameworld.getPlayer().getHeight();
-//		String texture = gameworld.getPlayer().getTexture();
-//
-//		//Draw background
-//		//drawBackground((int) gameworld.background.getCentre().getX(), (int) gameworld.background.getCentre().getY(),gameworld.background.getWidth(), gameworld.background.getHeight(), gameworld.background.getTexture(), g);
-//
-//		//Draw player
-//		drawPlayer(x, y, width, height, texture, g);
-//
-//		//Draw Bullets
-//		// change back
-//		gameworld.getBullets().forEach((temp) ->
-//		{
-//			drawBullet((int) temp.getCentre().getX(), (int) temp.getCentre().getY(), (int) temp.getWidth(), (int) temp.getHeight(), temp.getTexture(),g);
-//		});
-//
 		//Draw Enemies
 		gameworld.getRedBulls().forEach( ( temp ) ->
 				drawRedBulls( ( int ) temp.getCentre().getX(), ( int ) temp.getCentre().getY(), ( int ) temp.getWidth(),
@@ -172,11 +151,19 @@ public class Viewer extends JPanel {
 			}
 		}
 		try {
+			// school
 			drawBuilding ( g,
 					ImageIO.read( getClass().getResourceAsStream( "/school/left-side-school.png" ) ),
 					ImageIO.read( getClass().getResourceAsStream( "/school/centre-school.png" ) ),
 					ImageIO.read( getClass().getResourceAsStream( "/school/right-side-school.png" ) ),
-					500, gameworld.getMaxWorldRows() * gameworld.getScaledTileSize() );
+					81 * gameworld.getScaledTileSize(), gameworld.getMaxWorldRows() * gameworld.getScaledTileSize() );
+
+			// draw shop at end
+			drawBuilding( g,
+					ImageIO.read( getClass().getResourceAsStream( "/school/left-side-school.png" ) ),
+					ImageIO.read( getClass().getResourceAsStream( "/school/shop-centre.png" ) ),
+					ImageIO.read( getClass().getResourceAsStream( "/school/right-side-school.png" ) ),
+					81 * gameworld.getScaledTileSize(), 5 * gameworld.getScaledTileSize() + 100 );
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}

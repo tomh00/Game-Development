@@ -31,50 +31,33 @@ public class GameObject {
 	private int defaultSpeed;
 	private int currentSpeed;
 
-	// images for animating a game object
-	public BufferedImage forward1, forward2, backward1, backward2, left1, left2, right1, right2;
-	private BufferedImage currentImage;
-	private int spritePosition = 0;
-	private int frameNum = 0;
 	private Point3f centre= new Point3f(0,0,0); // Centre of object, using 3D as objects may be scaled
 	private int collisionRectSize = 32;
 	private Rectangle collisionArea;
 	private int width=10;
 	private int height=10;
 	private boolean hasTextured=false;
+	public BufferedImage currentImage;
 	private String textureLocation; 
 	private String blanktexture="res/blankSprite.png";
 
-	private boolean isInCollision;
+	private boolean isInCollisionWithSlowRank1;
+	private boolean isInCollisionWithSlowRank2;
 	
     public GameObject( BufferedImage currentImage, int width, int height, Point3f centre, int speed, Rectangle rectangle ) {
 		 hasTextured=true;
 
-		 this.currentImage = currentImage;
 		 this.width=width;
 		 this.height=height;
 		 this.centre =centre;
-
+		this.currentImage = currentImage;
 		 this.defaultSpeed = speed;
-		 isInCollision = false;
+		 isInCollisionWithSlowRank2 = false;
 		 collisionArea = rectangle;
 	}
 
 	public GameObject() {
 
-	}
-
-	public void animateSprite(){
-		if( frameNum > 15 ){
-			if( spritePosition == 0 ) {
-				spritePosition = 1;
-			}
-			else {
-				spritePosition = 0;
-			}
-			frameNum = 0;
-		}
-		frameNum++;
 	}
 
 	public Point3f getCentre() {
@@ -107,21 +90,22 @@ public class GameObject {
 
 	public int getDefaultSpeed(){ return defaultSpeed; }
 
-	public BufferedImage getCurrentImage(){ return currentImage; }
-	public int getSpritePosition() { return spritePosition; }
-	//public int getFrameNum() { return frameNum; }
 
-	public void setCurrentImage(BufferedImage currentImage) {
-		this.currentImage = currentImage;
-	}
+	//public int getFrameNum() { return frameNum; }
 
 	public void setDefaultSpeed(int defaultSpeed){ this.defaultSpeed = defaultSpeed; }
 	public void setWidth(int width){ this.width = width; }
 	public void setHeight(int height){ this.height = height; }
 
-	public void setIsInCollision( boolean isInCollision ) { this.isInCollision = isInCollision; }
+	public void setIsInCollisionWithSlowRank2(boolean isInCollision ) { this.isInCollisionWithSlowRank2 = isInCollision; }
+	public BufferedImage getCurrentImage(){ return currentImage; }
+	public boolean isInCollisionWithSlowRank2() { return isInCollisionWithSlowRank2; }
+	public boolean isInCollisionWithSlowRank1() { return isInCollisionWithSlowRank1; }
 
-	public boolean isInCollision() { return isInCollision; }
+	public void setInCollisionWithSlowRank1(boolean inCollisionWithSlowRank1) {
+		isInCollisionWithSlowRank1 = inCollisionWithSlowRank1;
+	}
+
 	public Rectangle getCollisionArea() { return collisionArea; }
 	public int getCollisionRectSize() { return collisionRectSize; }
 	public void setCollisionArea( Rectangle rectangle ) { collisionArea = rectangle; }

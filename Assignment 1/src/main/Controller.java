@@ -36,6 +36,12 @@ public class Controller implements KeyListener {
 	   private static boolean KeyDPressed= false;
 	   private static boolean KeyWPressed= false;
 	   private static boolean KeySpacePressed= false;
+
+	   // player 2 keys
+	   private static boolean KeyLeftPressed= false;
+	   private static boolean KeyDownPressed= false;
+	   private static boolean KeyRightPressed= false;
+	   private static boolean KeyUpPressed= false;
 	   
 	   private static final Controller instance = new Controller();
 	   
@@ -59,13 +65,12 @@ public class Controller implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) 
 	{
-		switch (e.getKeyChar()) 
+		switch (e.getKeyChar())
 		{
-			case 'a':setKeyAPressed(true);break;  
+			case 'a':setKeyAPressed(true);break;
 			case 's':setKeySPressed(true);break;
 			case 'w':setKeyWPressed(true);break;
 			case 'd':setKeyDPressed(true);break;
-			case ' ':setKeySpacePressed(true);break;   
 		    default:
 		    	System.out.println("main.Controller test:  Unknown key pressed");
 		        break;
@@ -78,13 +83,13 @@ public class Controller implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) 
 	{ 
-		switch (e.getKeyChar()) 
+		switch (e.getKeyChar())
 		{
-			case 'a':setKeyAPressed(false);break;  
+			case 'a':setKeyAPressed(false);break;
 			case 's':setKeySPressed(false);break;
 			case 'w':setKeyWPressed(false);break;
 			case 'd':setKeyDPressed(false);break;
-			case ' ':setKeySpacePressed(false);break;   
+			case ' ':setKeySpacePressed(false);break;
 		    default:
 		    	//System.out.println("main.Controller test:  Unknown key pressed");
 		        break;
@@ -141,9 +146,8 @@ public class Controller implements KeyListener {
 
 	public void setKeySpacePressed(boolean keySpacePressed) {
 		KeySpacePressed = keySpacePressed;
-	} 
-	
-	 
+	}
+
 }
 
 /*
