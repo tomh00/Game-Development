@@ -43,6 +43,8 @@ public class Model {
 	 public UI ui;
 	 private CopyOnWriteArrayList< GameObject > redBulls = new CopyOnWriteArrayList<>();
 	 private  CopyOnWriteArrayList<GameObject> carList  = new CopyOnWriteArrayList<>();
+	 private GameObject shop;
+
 	 private int playerlives  = 5;
 
 	// project uses tiles for the main game world
@@ -58,18 +60,19 @@ public class Model {
 	private final int screenWidth = scaledTileSize * maxScreenColumns;
 
 	// World map is larger than the screen so has seperate boundaries
-	private final int maxWorldColumns = 22;
-	private final int maxWorldRows = 80;
+	private final int maxWorldColumns = 98;
+	private final int maxWorldRows = 176;
 	private final int worldWidth = scaledTileSize * maxWorldColumns;
 	private final int worldHeight = scaledTileSize * maxWorldRows;
 
+	private boolean gameCompleted = false;
 	private int frameNum = 0;
 
 	public Model() {
 		//setup game world
 		//Player
 		player = new Player( 50, 50,
-				new Point3f( scaledTileSize * 12, scaledTileSize * 78,0 ),
+				new Point3f( scaledTileSize * 83, scaledTileSize * maxWorldRows - 100,0 ),
 				2 ,
 				new Rectangle( 8, 16, 32, 32 ) );
 
@@ -87,20 +90,23 @@ public class Model {
 						2, new Rectangle( ( int ) randX, ( int ) randY, scaledTileSize, scaledTileSize ) ) );
 			}
 
-			float randX = (float) Math.random( ) * maxWorldColumns * scaledTileSize;
+			/*float randX = (float) Math.random( ) * maxWorldColumns * scaledTileSize;
 			float randY = (float) Math.random( ) * maxWorldRows * scaledTileSize;
 			carList.add(
 					new GameObject( ImageIO.read( getClass().getResourceAsStream( "/cars/blue-car.png" ) ),
 					100, 100,
 					new Point3f( randX, randY, 0 ),
-					2, new Rectangle( ( int ) randX + 8, ( int ) randY + 16, 84, 68) ) );
-			int x = 1+ 2;
+					2, new Rectangle( ( int ) randX + 8, ( int ) randY + 16, 84, 68) ) );*/
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
-		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*50+500 ),0,0)));
-		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+500 ),0,0)));
-		//EnemiesList.add(new GameObject("res/UFO.png",50,50,new Point3f(((float)Math.random()*100+400 ),0,0)));
+
+		// make shop game object for ending game
+		shop = new GameObject( );
+		shop.setCentre( new Point3f( 82 * scaledTileSize, 4 * scaledTileSize, 0 ) );
+		shop.setWidth( 288 );
+		shop.setHeight( 288 );
+
 		ui = new UI( this );
 	    
 	}
@@ -113,6 +119,7 @@ public class Model {
 		// Enemy Logic next
 		redBullLogic();
 		carLogic();
+		shopLogic();
 		// Bullets move next 
 		//bulletLogic();
 		// interactions between objects 
@@ -152,38 +159,123 @@ public class Model {
 		
 	}
 
+	private void shopLogic() {
+		if (Math.abs(shop.getCentre().getX() - player.getCentre().getX()) < shop.getWidth()
+				&& Math.abs(shop.getCentre().getY() - player.getCentre().getY()) < shop.getHeight()) {
+			gameCompleted = true;
+		}
+	}
+
 	private void carLogic() {
 	// if the there are no cars currently then add one in the distance
-	// use the y coordinate to pick how far away it will be
-		if ( carList.isEmpty() ) {
-			try {
-				float randX = (float) Math.random() * maxWorldColumns * scaledTileSize;
-				float randY = (float) Math.random() * maxWorldRows * scaledTileSize;
-				carList.add(
-						new GameObject(ImageIO.read(getClass().getResourceAsStream("/cars/red-car.png")),
-								100, 100,
-								new Point3f(randX, player.getCentre().getY() - ( screenHeight / 2 ) - 750, 0),
-								2, new Rectangle((int) randX + 8, (int) randY + 16, 84, 68)));
+		if ( player.getCentre().getY() <= 26 * scaledTileSize ){
+			if ( carList.isEmpty() ) {
+				addCar( 2, 25, 15 );
+			}
 
-			} catch ( IOException e ) {
-				e.printStackTrace();
+			for ( GameObject car : carList ) {
+				// move car down the screen
+				car.getCentre().ApplyVector( new Vector3f( -car.getDefaultSpeed(), 0, 0 ) );
+				if ( car.getCentre().getX() < player.getCentre().getX() - screenWidth / 2 ) {
+					carList.remove(car);
+				}
 			}
 		}
-		for ( GameObject car : carList ){
-			// move car down the screen
-			car.getCentre().ApplyVector( new Vector3f( 0, -car.getDefaultSpeed(), 0 ) );
-			if ( car.getCentre().getY() > player.getCentre().getY() + screenHeight / 2 ) {
-				carList.remove( car );
+
+		else if ( player.getCentre().getY() <= 97 * scaledTileSize ) {
+			if ( carList.isEmpty() ) {
+				addCar( 0, 9, 18 );
 			}
 
-			// check for collision
-			// if collision subtract player life
-			if ( Math.abs(car.getCentre().getX()- player.getCentre().getX())< car.getWidth()
-					&& Math.abs(car.getCentre().getY()- player.getCentre().getY()) < car.getHeight()) {
-				playerlives--;
-				carList.remove( car );
-				System.out.println(playerlives);
+			for ( GameObject car : carList ) {
+				// move car down the screen
+				car.getCentre().ApplyVector( new Vector3f( 0, -car.getDefaultSpeed(), 0 ) );
+				if ( car.getCentre().getY() > player.getCentre().getY() + screenHeight / 2 ) {
+					carList.remove( car );
+				}
 			}
+		}
+		else if ( player.getCentre().getY() <= 105 * scaledTileSize ) {
+			if ( carList.isEmpty() ) {
+				addCar( 1, 97, 105 );
+			}
+
+			for (GameObject car : carList) {
+				// move car down the screen
+				car.getCentre().ApplyVector( new Vector3f( +car.getDefaultSpeed(), 0, 0 ) );
+				if ( car.getCentre().getX() > player.getCentre().getX() + screenWidth / 2 ) {
+					carList.remove(car);
+				}
+			}
+		}
+		else if ( player.getCentre().getY() > 105 * scaledTileSize ) {
+			if ( carList.isEmpty() ) {
+				addCar( 0, 80, 87 );
+			}
+
+			for (GameObject car : carList) {
+				// move car down the screen
+				car.getCentre().ApplyVector(new Vector3f( 0, -car.getDefaultSpeed(), 0));
+				if (car.getCentre().getY() > player.getCentre().getY() + screenHeight / 2) {
+					carList.remove(car);
+				}
+			}
+		}
+
+				// check for collision
+				// if collision subtract player life
+		for (GameObject car : carList) {
+			if (Math.abs(car.getCentre().getX() - player.getCentre().getX()) < car.getWidth()
+					&& Math.abs(car.getCentre().getY() - player.getCentre().getY()) < car.getHeight()) {
+				playerlives--;
+				carList.remove(car);
+
+			}
+		}
+	}
+
+	private void addCar ( int direction, float min, float max ) {
+		// direction 0 = up
+		// direction 1 = left #
+		// direction 2 = right
+
+		switch ( direction ) {
+			case 0 :
+				float randX = (float) Math.random() * ( ( max * scaledTileSize ) - ( min * scaledTileSize ) ) + ( min * scaledTileSize );
+				try {
+					carList.add(
+							new GameObject( ImageIO.read ( getClass().getResourceAsStream( "/cars/red-car.png" ) ),
+									100, 100,
+									new Point3f( randX, player.getCentre().getY() - (screenHeight / 2) - 750, 0 ),
+									2, new Rectangle(0, 0, 0, 0 ) ) );
+				} catch ( IOException e ) {
+					e.printStackTrace();
+				}
+				break;
+			case 1 :
+				float randY1 = (float) Math.random() * ((max * scaledTileSize) - (min * scaledTileSize)) + (min * scaledTileSize);
+				try {
+					carList.add(
+							new GameObject(ImageIO.read(getClass().getResourceAsStream("/cars/red-car.png")),
+									100, 100,
+									new Point3f(player.getCentre().getX() - (screenWidth / 2) - 750, randY1, 0),
+									2, new Rectangle(0, 0, 0, 0)));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				break;
+			case 2:
+				float randY2 = ( float ) Math.random() * ( ( max * scaledTileSize ) - ( min * scaledTileSize ) ) + ( min * scaledTileSize );
+				try {
+					carList.add(
+							new GameObject(ImageIO.read( getClass().getResourceAsStream( "/cars/red-car.png" ) ),
+									100, 100,
+									new Point3f(player.getCentre().getX() + ( screenWidth / 2 ) + 750, randY2, 0),
+									2, new Rectangle(0, 0, 0, 0)));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				break;
 		}
 	}
 
@@ -278,8 +370,6 @@ public class Model {
 		}
 
 		if (Controller.getInstance().isKeySPressed()) {
-			ui.completed = true;
-			this.controller = null;
 			detectCollision(3, player);
 			if (player.isInCollision()) {
 				player.setCurrentSpeed(player.getDefaultSpeed() - 1);
@@ -387,6 +477,7 @@ public class Model {
 	public int getWorldHeight() { return worldHeight; }
 	public int getWorldWidth() { return worldWidth; }
 	public CopyOnWriteArrayList<GameObject> getRedBulls() { return redBulls; }
+	public boolean isGameCompleted() { return gameCompleted; }
 
 	public CopyOnWriteArrayList<GameObject> getCarList() { return carList; }
 	public int getPlayerlives () { return playerlives; }

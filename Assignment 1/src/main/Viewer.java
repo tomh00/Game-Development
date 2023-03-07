@@ -176,7 +176,14 @@ public class Viewer extends JPanel {
 					ImageIO.read( getClass().getResourceAsStream( "/school/left-side-school.png" ) ),
 					ImageIO.read( getClass().getResourceAsStream( "/school/centre-school.png" ) ),
 					ImageIO.read( getClass().getResourceAsStream( "/school/right-side-school.png" ) ),
-					500, gameworld.getMaxWorldRows() * gameworld.getScaledTileSize() );
+					80 * gameworld.getScaledTileSize(), gameworld.getMaxWorldRows() * gameworld.getScaledTileSize() );
+
+			// draw shop at end
+			drawBuilding( g,
+					ImageIO.read( getClass().getResourceAsStream( "/school/left-side-school.png" ) ),
+					ImageIO.read( getClass().getResourceAsStream( "/school/shop-centre.png" ) ),
+					ImageIO.read( getClass().getResourceAsStream( "/school/right-side-school.png" ) ),
+					80 * gameworld.getScaledTileSize(), 5 * gameworld.getScaledTileSize() );
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}

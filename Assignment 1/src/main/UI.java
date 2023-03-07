@@ -15,7 +15,7 @@ public class UI {
     public UI ( Model gameWorld ) {
         this.gameWorld = gameWorld;
         font = new Font( "Arial", Font.PLAIN, 40 );
-        completed = false;
+
     }
 
     public void showMessage ( String text ) {
@@ -26,7 +26,7 @@ public class UI {
     }
 
     public void draw ( Graphics g ) {
-        System.out.println(gameWorld.getPlayerlives());
+
         if ( gameWorld.getPlayerlives() <= 0 ) {
             String text;
             int textLength;
@@ -40,7 +40,7 @@ public class UI {
 
             g.drawString( text, x, y );
         }
-        else if ( completed ) {
+        else if ( gameWorld.isGameCompleted() ) {
             String text;
             int textLength;
             int x, y;
