@@ -41,7 +41,8 @@ public class GameObject {
 	private String textureLocation; 
 	private String blanktexture="res/blankSprite.png";
 
-	private boolean isInCollision;
+	private boolean isInCollisionWithSlowRank1;
+	private boolean isInCollisionWithSlowRank2;
 	
     public GameObject( BufferedImage currentImage, int width, int height, Point3f centre, int speed, Rectangle rectangle ) {
 		 hasTextured=true;
@@ -51,7 +52,7 @@ public class GameObject {
 		 this.centre =centre;
 		this.currentImage = currentImage;
 		 this.defaultSpeed = speed;
-		 isInCollision = false;
+		 isInCollisionWithSlowRank2 = false;
 		 collisionArea = rectangle;
 	}
 
@@ -96,9 +97,15 @@ public class GameObject {
 	public void setWidth(int width){ this.width = width; }
 	public void setHeight(int height){ this.height = height; }
 
-	public void setIsInCollision( boolean isInCollision ) { this.isInCollision = isInCollision; }
+	public void setIsInCollisionWithSlowRank2(boolean isInCollision ) { this.isInCollisionWithSlowRank2 = isInCollision; }
 	public BufferedImage getCurrentImage(){ return currentImage; }
-	public boolean isInCollision() { return isInCollision; }
+	public boolean isInCollisionWithSlowRank2() { return isInCollisionWithSlowRank2; }
+	public boolean isInCollisionWithSlowRank1() { return isInCollisionWithSlowRank1; }
+
+	public void setInCollisionWithSlowRank1(boolean inCollisionWithSlowRank1) {
+		isInCollisionWithSlowRank1 = inCollisionWithSlowRank1;
+	}
+
 	public Rectangle getCollisionArea() { return collisionArea; }
 	public int getCollisionRectSize() { return collisionRectSize; }
 	public void setCollisionArea( Rectangle rectangle ) { collisionArea = rectangle; }

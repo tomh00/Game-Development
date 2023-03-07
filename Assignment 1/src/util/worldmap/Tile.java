@@ -1,22 +1,23 @@
 package util.worldmap;
 
-import util.GameObject;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class Tile {
     private BufferedImage tile;
-    private boolean isObstruction;
+    private boolean isSlowTileRank1;
+    private boolean isSlowTileRank2;
 
-    public Tile ( BufferedImage tile, boolean isObstruction ) {
+
+    public Tile ( BufferedImage tile, boolean isObstruction, boolean isSlowTileRank1 ) {
         this.tile = tile;
-        this.isObstruction = isObstruction;
+        this.isSlowTileRank2 = isObstruction;
+        this.isSlowTileRank1 = isSlowTileRank1;
     }
 
     public BufferedImage getTile () { return tile; }
 
-    public boolean isObstruction() { return isObstruction; }
-    public void setIsObsruction( boolean obsruction ) { isObstruction = obsruction;}
+    public boolean isSlowTileRank2() { return isSlowTileRank2; }
+    public void setIsObsruction( boolean obsruction ) { isSlowTileRank2 = obsruction;}
+
+    public boolean isSlowTileRank1() { return isSlowTileRank1; }
 }

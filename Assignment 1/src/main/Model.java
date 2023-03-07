@@ -35,7 +35,7 @@ SOFTWARE.
    
    (MIT LICENSE ) e.g do what you want with this :-) 
  */ 
-public class Model {
+public class Model implements Runnable{
 	
 	 private Player player;
 	 private WorldMap worldMap;
@@ -45,7 +45,7 @@ public class Model {
 	 private  CopyOnWriteArrayList<GameObject> carList  = new CopyOnWriteArrayList<>();
 	 private GameObject shop;
 
-	 private int playerlives  = 5;
+	 private int playerlives  = 3;
 
 	// project uses tiles for the main game world
 	// using 16x16 tiles and scaling them up 3 times
@@ -67,15 +67,24 @@ public class Model {
 
 	private boolean gameCompleted = false;
 	private int frameNum = 0;
+	private int hornFrameNum = 0;
 	private int carNum = 0;
 	private String[] carTypes;
+	private Sound music = new Sound();
+	private Sound soundEffect = new Sound();
 
-	public Model() {
+	private static int TargetFPS = 100;
+	Thread gameThread;
+	Viewer viewer;
+
+	public boolean gameStarted = false;
+
+	public Model( ) {
 		//setup game world
 		//Player
 		player = new Player( 50, 50,
 				new Point3f( scaledTileSize * 83, scaledTileSize * maxWorldRows - 100,0 ),
-				2 ,
+				3 ,
 				new Rectangle( 8, 16, 32, 32 ) );
 
 		worldMap = new WorldMap( this );
@@ -98,67 +107,80 @@ public class Model {
 		ui = new UI( this );
 	    
 	}
-	
+
+	public void startGame(Viewer viewer ) {
+		playSoundEffect( 0 );
+		try {
+				Thread.sleep(1000);
+		} catch ( InterruptedException e ) {
+			e.printStackTrace();
+		}
+		playMusic( 1 );
+		this.viewer = viewer;
+		gameThread = new Thread( this );
+		gameThread.start();
+	}
+
+	@Override
+	public void run() {
+		int TimeBetweenFrames = 1000 / TargetFPS;
+		long FrameCheck = System.currentTimeMillis() + (long) TimeBetweenFrames;
+
+		while ( gameThread != null ) {
+			gamelogic();
+			viewer.updateview();
+
+			try {
+				double timeLeft = FrameCheck - System.currentTimeMillis();
+				if ( timeLeft < 0 ) { timeLeft = 0; }
+				Thread.sleep( ( long ) timeLeft);
+
+				FrameCheck += TimeBetweenFrames;
+			} catch ( InterruptedException e ) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	// This is the heart of the game , where the model takes in all the inputs ,decides the outcomes and then changes the model accordingly. 
-	public void gamelogic() 
+	public void gamelogic()
 	{
-		// Player Logic first 
 		playerLogic();
-		// Enemy Logic next
 		redBullLogic();
 		carLogic();
 		shopLogic();
-		// Bullets move next 
-		//bulletLogic();
-		// interactions between objects 
-		gameLogic();
 	   
 	}
 
-	private void gameLogic() { 
-		
-		
-		// this is a way to increment across the array list data structure 
+	public void playMusic( int tune ) {
+		music.setFile( tune );
+		music.play();
+		music.loop();
+	}
 
-		
-		//see if they hit anything 
-		// using enhanced for-loop style as it makes it alot easier both code wise and reading wise too 
-		/*for (GameObject temp : EnemiesList)
-		{
-			for (GameObject Bullet : BulletList)
-			{
-				if ( Math.abs(temp.getCentre().getX()- Bullet.getCentre().getX())< temp.getWidth()
-					&& Math.abs(temp.getCentre().getY()- Bullet.getCentre().getY()) < temp.getHeight())
-				{
-					EnemiesList.remove(temp);
-					BulletList.remove(Bullet);
-					Score++;
-				}
-			}
-		}*/
+	public void stopSound() {
+		music.stop();
+	}
 
-//		for (GameObject enemy : EnemiesList) {
-//			if ( Math.abs(Player.getCentre().getX()- enemy.getCentre().getX())< Player.getWidth()
-//					&& Math.abs(Player.getCentre().getY()- enemy.getCentre().getY()) < Player.getHeight()) {
-//				Player.getCentre().ApplyVector(new Vector3f(0,-80,0));
-//				Score--;
-//			}
-//		}
-		
+	public void playSoundEffect( int tune ) {
+		soundEffect.setFile( tune );
+		soundEffect.play();
 	}
 
 	private void shopLogic() {
 		if (Math.abs(shop.getCentre().getX() - player.getCentre().getX()) < shop.getWidth()
 				&& Math.abs(shop.getCentre().getY() - player.getCentre().getY()) < shop.getHeight()) {
 			gameCompleted = true;
+			playSoundEffect( 5 );
 		}
 	}
 
 	private void carLogic() {
-	// if the there are no cars currently then add one in the distance
+		soundHorn();
+		// if the there are no cars currently then add one in the distance
 		if ( player.getCentre().getY() <= 26 * scaledTileSize ){
 			if ( carList.isEmpty() ) {
-				addCar( 2, 25, 15 );
+				addCar( 2, 14, 18 );
 			}
 
 			for ( GameObject car : carList ) {
@@ -185,7 +207,7 @@ public class Model {
 		}
 		else if ( player.getCentre().getY() <= 105 * scaledTileSize ) {
 			if ( carList.isEmpty() ) {
-				addCar( 1, 97, 105 );
+				addCar( 1, 96, 99 );
 			}
 
 			for (GameObject car : carList) {
@@ -198,7 +220,7 @@ public class Model {
 		}
 		else if ( player.getCentre().getY() > 105 * scaledTileSize ) {
 			if ( carList.isEmpty() ) {
-				addCar( 0, 80, 87 );
+				addCar( 0, 80, 84 );
 			}
 
 			for (GameObject car : carList) {
@@ -210,16 +232,24 @@ public class Model {
 			}
 		}
 
-				// check for collision
-				// if collision subtract player life
+		// check for collision
+		// if collision subtract player life
 		for (GameObject car : carList) {
-			if (Math.abs( ( car.getCentre().getX() + car.getCollisionArea().x ) -  player.getCentre().getX() ) < car.getCollisionArea().width
-					&& Math.abs( ( car.getCentre().getY() + car.getCollisionArea().y ) - player.getCentre().getY() ) < car.getCollisionArea().height ) {
+			if (Math.abs(  car.getCentre().getX() - player.getCentre().getX() ) < car.getCollisionArea().width
+					&& Math.abs( car.getCentre().getY() - player.getCentre().getY() ) < car.getCollisionArea().height ) {
 				playerlives--;
 				carList.remove(car);
-
+				playSoundEffect( 6 );
 			}
 		}
+	}
+
+	private void soundHorn() {
+		if ( hornFrameNum >= 1000 ) {
+			playSoundEffect( 2 );
+			hornFrameNum = 0;
+		}
+		hornFrameNum++;
 	}
 
 	private void addCar ( int direction, float min, float max ) {
@@ -235,7 +265,7 @@ public class Model {
 							new GameObject( ImageIO.read ( getClass().getResourceAsStream( carTypes[ carNum ] ) ),
 									100, 100,
 									new Point3f( randX, player.getCentre().getY() - (screenHeight / 2) - 750, 0 ),
-									2, new Rectangle(8, 16, 32, 32 ) ) );
+									2, new Rectangle(4, 8, 40, 40 ) ) );
 				} catch ( IOException e ) {
 					e.printStackTrace();
 				}
@@ -247,7 +277,7 @@ public class Model {
 							new GameObject(ImageIO.read(getClass().getResourceAsStream(carTypes[ carNum ] ) ),
 									100, 100,
 									new Point3f(player.getCentre().getX() - (screenWidth / 2) - 750, randY1, 0),
-									2, new Rectangle( 8, 16, 32, 32 ) ) );
+									2, new Rectangle( 4, 8, 40, 40 ) ) );
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -259,7 +289,7 @@ public class Model {
 							new GameObject(ImageIO.read( getClass().getResourceAsStream( carTypes[ carNum ] ) ),
 									100, 100,
 									new Point3f(player.getCentre().getX() + ( screenWidth / 2 ) + 750, randY2, 0),
-									2, new Rectangle( 8, 16, 32, 32 ) ) );
+									2, new Rectangle( 4, 8, 40, 40 ) ) );
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -277,6 +307,7 @@ public class Model {
 				redBulls.remove( redbull );
 				player.setBoosted( true );
 				ui.showMessage( "BOOST ACQUIRED!" );
+				playSoundEffect( 3 );
 			}
 		}
 	}
@@ -360,15 +391,17 @@ public class Model {
 
 		if (Controller.getInstance().isKeyAPressed()) {
 			detectCollision(0, player);
-			if (player.isInCollision()) {
-				player.setCurrentSpeed(player.getDefaultSpeed() - 1);
+			if ( player.isInCollisionWithSlowRank1() ) {
+				player.setCurrentSpeed ( player.getDefaultSpeed() - 1 );
+			} else if ( player.isInCollisionWithSlowRank2() ) {
+				player.setCurrentSpeed( player.getDefaultSpeed() - 2 );
 			}
 			if (player.isBoosted()) {
 				player.setCurrentSpeed(player.getCurrentSpeed() + 1);
 			}
 			player.getCentre().ApplyVector(
 					new Vector3f(-player.getCurrentSpeed(), 0, 0));
-			player.setIsInCollision(false);
+			player.setIsInCollisionWithSlowRank2(false);
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.left1);
 			} else {
@@ -378,14 +411,16 @@ public class Model {
 
 		if (Controller.getInstance().isKeyDPressed()) {
 			detectCollision( 1, player );
-			if ( player.isInCollision() ) {
-				player.setCurrentSpeed( player.getDefaultSpeed() - 1 );
+			if ( player.isInCollisionWithSlowRank1() ) {
+				player.setCurrentSpeed ( player.getDefaultSpeed() - 1 );
+			} else if ( player.isInCollisionWithSlowRank2() ) {
+				player.setCurrentSpeed( player.getDefaultSpeed() - 2 );
 			}
 			if ( player.isBoosted() ) {
 				player.setCurrentSpeed( ( player.getCurrentSpeed() + 1 ) );
 			}
 			player.getCentre().ApplyVector(new Vector3f(player.getCurrentSpeed(), 0, 0));
-			player.setIsInCollision( false );
+			player.setIsInCollisionWithSlowRank2( false );
 			if (player.getSpritePosition() == 0) {
 				player.setCurrentImage(player.right1);
 			} else {
@@ -395,8 +430,10 @@ public class Model {
 
 		if (Controller.getInstance().isKeyWPressed()) {
 			detectCollision(2, player);
-			if (player.isInCollision()) {
-				player.setCurrentSpeed(player.getDefaultSpeed() - 1);
+			if ( player.isInCollisionWithSlowRank1() ) {
+				player.setCurrentSpeed ( player.getDefaultSpeed() - 1 );
+			} else if ( player.isInCollisionWithSlowRank2() ) {
+				player.setCurrentSpeed( player.getDefaultSpeed() - 2 );
 			}
 			if ( player.isBoosted() ) {
 				player.setCurrentSpeed(player.getCurrentSpeed() + 1);
@@ -412,8 +449,10 @@ public class Model {
 
 		if (Controller.getInstance().isKeySPressed()) {
 			detectCollision(3, player);
-			if (player.isInCollision()) {
-				player.setCurrentSpeed(player.getDefaultSpeed() - 1);
+			if ( player.isInCollisionWithSlowRank1() ) {
+				player.setCurrentSpeed ( player.getDefaultSpeed() - 1 );
+			} else if ( player.isInCollisionWithSlowRank2() ) {
+				player.setCurrentSpeed( player.getDefaultSpeed() - 2 );
 			}
 			player.getCentre().ApplyVector(new Vector3f(0, -player.getCurrentSpeed(), 0));
 			if (player.getSpritePosition() == 0) {
@@ -423,7 +462,8 @@ public class Model {
 			}
 		}
 
-		player.setIsInCollision( false );
+		player.setInCollisionWithSlowRank1( false );
+		player.setIsInCollisionWithSlowRank2( false );
 		if ( player.isBoosted() ) {
 			if ( frameNum == 30 ) {
 				player.setCurrentSpeed( player.getDefaultSpeed() );
@@ -499,8 +539,12 @@ public class Model {
 	}
 
 	private void setCollisionStatus(int tileType1, int tileType2, GameObject gameObject ) {
-		if ( worldMap.getTiles()[ tileType1 ].isObstruction() || worldMap.getTiles()[ tileType2 ].isObstruction() ) {
-			gameObject.setIsInCollision( true );
+		if ( worldMap.getTiles()[ tileType1 ].isSlowTileRank1() || worldMap.getTiles()[ tileType2 ].isSlowTileRank1() ) {
+			gameObject.setInCollisionWithSlowRank1( true );
+		}
+
+		if ( worldMap.getTiles()[ tileType1 ].isSlowTileRank2() || worldMap.getTiles()[ tileType2 ].isSlowTileRank2() ) {
+			gameObject.setIsInCollisionWithSlowRank2( true );
 		}
 	}
 
@@ -522,6 +566,7 @@ public class Model {
 
 	public CopyOnWriteArrayList<GameObject> getCarList() { return carList; }
 	public int getPlayerlives () { return playerlives; }
+
 	/*public CopyOnWriteArrayList<GameObject> getBullets() {
 		return BulletList;
 	}

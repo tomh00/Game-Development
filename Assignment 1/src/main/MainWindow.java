@@ -42,7 +42,7 @@ public class MainWindow {
 	private static   int TargetFPS = 100;
 	private static boolean startGame= false;
 	private   JLabel BackgroundImageForStartMenu;
-	  
+
 	public MainWindow() {
 		frame.setSize(975, 760);  // you can customise this later and adapt it to change on size.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   //If exit // you can modify with your way of quitting , just is a template.
@@ -88,9 +88,9 @@ public class MainWindow {
 
 	public static void main(String[] args) {
 		MainWindow hello = new MainWindow();  //sets up environment
+		gameworld.startGame( canvas );
 
-
-		while(true) { //not nice but remember we do just want to keep looping till the end.  // this could be replaced by a thread but again we want to keep things simple
+		/*while( true ) { //not nice but remember we do just want to keep looping till the end.  // this could be replaced by a thread but again we want to keep things simple
 			//swing has timer class to help us time this but I'm writing my own, you can of course use the timer, but I want to set FPS and display it
 
 			int TimeBetweenFrames = 1000 / TargetFPS;
@@ -106,15 +106,15 @@ public class MainWindow {
 //				 {
 			gameloop();
 //				 }
-		}
+		}*/
 //
 //			//UNIT test to see if framerate matches
 //		 UnitTests.CheckFrameRate(System.currentTimeMillis(),FrameCheck, TargetFPS);
 //
 //		}
-		
-		
-	} 
+
+
+	}
 	//Basic main.Model-View-main.Controller pattern
 	private static void gameloop() {
 		// GAMELOOP
@@ -128,13 +128,6 @@ public class MainWindow {
 //
 		canvas.updateview();
 	}
-//
-//		// Both these calls could be setup as  a thread but we want to simplify the game logic for you.
-//		//score update
-//		 frame.setTitle("Score =  "+ gameworld.getScore());
-//
-//
-//	}
 
 }
 
