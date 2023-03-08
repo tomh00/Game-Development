@@ -1,3 +1,6 @@
+// Tom Higgins - 19343176
+// Reference: https://youtu.be/nUHh_J2Acy8?list=PL_QPQmz5C6WUF-pOQDsbsKbaBZqXj4qSq
+
 package main;
 
 import javax.sound.sampled.AudioInputStream;
